@@ -52,7 +52,7 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     render_protein_viewer(
-        pdb_path="../Videos/Vitis_DHK.pdb",
+        pdb_path="Videos/Vitis_DHK.pdb",
         focus_resns=["DHK","NPH"],
         highlight_residues=[123, 124, 128, 133, 158, 162, 222],
         rotate_angles=(-220, -40, -160),
@@ -61,7 +61,7 @@ with col1:
 
 with col2:
     render_protein_viewer(
-        pdb_path="../Videos/Vitis_DHQ.pdb",
+        pdb_path="Videos/Vitis_DHQ.pdb",
         focus_resns=["DQH", "NPH"],
         highlight_residues=[123, 124, 128, 133, 158, 162, 222],
         rotate_angles=(90,-90, 20),
@@ -70,7 +70,7 @@ with col2:
 
 with col3:
     render_protein_viewer(
-        pdb_path="../Videos/Vitis_DHM.pdb",
+        pdb_path="Videos/Vitis_DHM.pdb",
         focus_resns=["DHM", "NPH"],
         highlight_residues=[125, 126, 130, 135, 160, 164, 224],
         rotate_angles=(90, 20, -130),
@@ -87,7 +87,7 @@ st.markdown("""
 st.markdown("""Molecular dynamics simulations were performed to study the interactions of these DFRs with the substrate NPH (Naringenin).
             
          """)
-st.image("../Videos/TIGHT_resMDVvZm_PUBLICATION.png", caption="DFR Organism MD simulation",)
+st.image("Videos/TIGHT_resMDVvZm_PUBLICATION.png", caption="DFR Organism MD simulation",)
 
 
 
@@ -98,4 +98,4 @@ st.image("../Videos/TIGHT_resMDVvZm_PUBLICATION.png", caption="DFR Organism MD s
 
 # Optional video section
 st.header("Video")
-st.video("/nfs/mathusalem/ldavid/Communications/Videos/graph_evolution.mp4", autoplay=True)
+st.video("Videos/graph_evolution.mp4", autoplay=True)
