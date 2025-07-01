@@ -108,24 +108,19 @@ st.set_page_config(layout="wide")
 st.title("Interactive Network Viewer")
 
 # === Load the GraphML file ===
-graphml_path = "Videos/DHK_bounded_dhk_nph_neighborhood.graphml"
+graphml_path = "../Videos/DHK_bounded_dhk_nph_neighborhood.graphml"  # adjust path as needed
 G = nx.read_graphml(graphml_path)
 
 # === Create a Pyvis Network ===
 net = Network(height="750px", width="100%", bgcolor="#ffffff", font_color="black")
-
-# Populate the network with nodes and edges
 net.from_nx(G)
-
-# Optional: customize physics or layout
 net.repulsion(node_distance=150, spring_length=200)
 
 # === Save and Display in Streamlit ===
-path = "/tmp/pyvis_graph.html"
-net.show(path)
+html_path = "/tmp/pyvis_graph.html"
+net.write_html(html_path, notebook=False)
 
-# Embed HTML in Streamlit
-with open(path, 'r', encoding='utf-8') as f:
+with open(html_path, 'r', encoding='utf-8') as f:
     html_content = f.read()
 
 st.components.v1.html(html_content, height=750, scrolling=True)
