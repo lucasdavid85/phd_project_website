@@ -1,6 +1,11 @@
 import streamlit as st
 import py3Dmol
 import os
+import streamlit as st
+import networkx as nx
+import matplotlib.pyplot as plt
+
+
 
 st.set_page_config(page_title="Organism Network", layout="wide")
 st.title("Catalytic site of Vitis vinifera DFRs")
@@ -94,6 +99,15 @@ st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
 st.video("Videos/DFR_DHQ.mp4", autoplay=True)
 
+# Graph to print 
+st.header("Graph of the DFR interaction network")
+# Load and visualize the GraphML file
+G = nx.read_graphml("Videos/DHK_bounded_dhk_nph_neighborhood.graphml")
+
+fig, ax = plt.subplots(figsize=(10, 8))
+pos = nx.spring_layout(G, seed=42)
+nx.draw(G, pos, with_labels=True, node_color="skyblue", edge_color="gray", node_size=500, font_size=8, ax=ax)
+st.pyplot(fig)
 
 
 
