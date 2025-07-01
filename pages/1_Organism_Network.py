@@ -4,6 +4,7 @@ import os
 import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
+from pyvis.network import Network
 
 
 
@@ -99,19 +100,36 @@ st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
 st.video("Videos/DFR_DHQ.mp4", autoplay=True)
 
+
+##################################################################################
+
 # Graph to print 
-st.header("Graph of the DFR interaction network")
-# Load and visualize the GraphML file
-G = nx.read_graphml("Videos/DHK_bounded_dhk_nph_neighborhood.graphml")
+st.set_page_config(layout="wide")
+st.title("Interactive Network Viewer")
 
-fig, ax = plt.subplots(figsize=(10, 8))
-pos = nx.spring_layout(G, seed=42)
-nx.draw(G, pos, with_labels=True, node_color="skyblue", edge_color="gray", node_size=500, font_size=8, ax=ax)
-st.pyplot(fig)
+# === Load the GraphML file ===
+graphml_path = "Videos/DHK_bounded_dhk_nph_neighborhood.graphml"
+G = nx.read_graphml(graphml_path)
 
+# === Create a Pyvis Network ===
+net = Network(height="750px", width="100%", bgcolor="#ffffff", font_color="black")
 
+# Populate the network with nodes and edges
+net.from_nx(G)
 
+# Optional: customize physics or layout
+net.repulsion(node_distance=150, spring_length=200)
 
+# === Save and Display in Streamlit ===
+path = "/tmp/pyvis_graph.html"
+net.show(path)
+
+# Embed HTML in Streamlit
+with open(path, 'r', encoding='utf-8') as f:
+    html_content = f.read()
+
+st.components.v1.html(html_content, height=750, scrolling=True)
+##################################################################################
 # Optional video section
 st.header("Graph evolution across simulation")
 st.video("Videos/graph_evolution.mp4", autoplay=True)
