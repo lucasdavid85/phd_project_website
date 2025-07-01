@@ -5,7 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import mdanalysis as mda
+import MDAnalysis as mda
+
 
 st.set_page_config(page_title="ANS DFR Interaction", layout="wide")
 st.title("Influence of flavonoid metabolite high concentration on DFR substrate specificity")
