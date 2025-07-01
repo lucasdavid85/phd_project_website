@@ -2,8 +2,8 @@ import streamlit as st
 import py3Dmol
 import os
 
-
-def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angles, title):
+def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angles, title,
+                          width=1200, height=800):
     if not os.path.exists(pdb_path):
         st.error(f"PDB file not found: {pdb_path}")
         return
@@ -12,39 +12,33 @@ def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angl
         pdb_data = f.read()
 
     st.subheader(title)
-    view = py3Dmol.view(width=1000)
+    view = py3Dmol.view(width=width, height=height)
     view.addModel(pdb_data, "pdb")
+
+    # Default white cartoon
     view.setStyle({'cartoon': {'color': 'white'}})
 
-    # Highlight resn-specific regions
-    for resn, color in zip(focus_resns, ['greenCarbon', 'blueCarbon']):
-        view.setStyle({'resn': resn}, {'stick': {'colorscheme': color}})
-        view.addLabel(resn, {
-            'position': {'resn': resn},
-            'backgroundColor': 'white',
-            'fontColor': 'black',
-            'fontSize': 12
-        })
+    # 🟦 Color ANS residues 1–350 in blue
+    view.setStyle({'resi': list(range(1, 351))}, {'cartoon': {'color': 'skyblue'}})
 
-    # Highlight residues
+    # 🟥 Color DFR residues 351–370 in red
+    view.setStyle({'resi': list(range(351, 371))}, {'cartoon': {'color': 'lightcoral'}})
+
+    # Highlight specific residues (optional)
     for resid in highlight_residues:
         view.setStyle({'resi': str(resid)}, {'stick': {'colorscheme': 'default'}})
-        view.addLabel(f"{resid}", {
-            'position': {'resi': str(resid)},
-            'backgroundColor': 'white',
-            'fontColor': 'red',
-            'fontSize': 10
-        })
 
     # Orientation
     view.rotate(rotate_angles[0], 'x')
     view.rotate(rotate_angles[1], 'y')
     view.rotate(rotate_angles[2], 'z')
-    view.zoomTo({'or': [{'resn': r} for r in focus_resns] })
-    view.zoom(0.6)
-    view.setBackgroundColor('white')
-    st.components.v1.html(view._make_html(), height=700, scrolling=True)
 
+    # Zoom on both regions: ANS and DFR
+    view.zoomTo({'or': [{'resi': list(range(1, 351))}, {'resi': list(range(351, 371))}]})
+    view.zoom(0.8)
+    view.setBackgroundColor('white')
+
+    st.components.v1.html(view._make_html(), height=height + 100, scrolling=True)
 
 
 
@@ -85,11 +79,13 @@ render_protein_viewer(
 
 render_protein_viewer(
     pdb_path="Videos/LZerD_Model.pdb",
-    focus_resns=["FE"],
-    highlight_residues=[289,233,235],
+    focus_resns=[],  # Not needed here
+    highlight_residues=[289, 233, 235],  # Optional
     rotate_angles=(-220, -40, -160),
-    title="ANS DFR interaction using LZerD model")
-    
+    title="ANS DFR interaction using LZerD model",
+    width=1400,
+    height=800
+)
 
 
 # st.title("Protein protein docking protocols")
