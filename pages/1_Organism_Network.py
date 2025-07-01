@@ -125,17 +125,18 @@ for node in net.nodes:
 # Enable physics and layout options
 net.toggle_physics(True)
 net.set_options("""
-var options = {
-  nodes: {
-    shape: 'dot',
-    size: 15
+{
+  "nodes": {
+    "shape": "dot",
+    "size": 15
   },
-  physics: {
-    enabled: true,
-    stabilization: { iterations: 100 }
+  "physics": {
+    "enabled": true,
+    "stabilization": { "iterations": 100 }
   }
 }
 """)
+
 
 # Save and render
 html_path = "/tmp/pyvis_graph.html"
