@@ -107,16 +107,37 @@ st.video("Videos/DFR_DHQ.mp4", autoplay=True)
 st.set_page_config(layout="wide")
 st.title("Interactive Network Viewer")
 
-# === Load the GraphML file ===
-graphml_path = "Videos/DHK_bounded_dhk_nph_neighborhood.graphml"  # adjust path as needed
+# Load GraphML file
+graphml_path = "Videos/DHK_bounded_dhk_nph_neighborhood.graphml"
 G = nx.read_graphml(graphml_path)
 
-# === Create a Pyvis Network ===
+# Create PyVis Network
 net = Network(height="750px", width="100%", bgcolor="#ffffff", font_color="black")
 net.from_nx(G)
-net.repulsion(node_distance=150, spring_length=200)
 
-# === Save and Display in Streamlit ===
+# Customize node: change DHK color
+for node in net.nodes:
+    if node["id"] == "DHK":
+        node["color"] = "red"
+        node["size"] = 30
+        node["title"] = "Target Node: DHK"
+
+# Enable physics and layout options
+net.toggle_physics(True)
+net.set_options("""
+var options = {
+  nodes: {
+    shape: 'dot',
+    size: 15
+  },
+  physics: {
+    enabled: true,
+    stabilization: { iterations: 100 }
+  }
+}
+""")
+
+# Save and render
 html_path = "/tmp/pyvis_graph.html"
 net.write_html(html_path, notebook=False)
 
