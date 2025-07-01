@@ -69,7 +69,7 @@ st.image("Videos/ANS_cata.png", caption="ANS catalytic site")
 
 render_protein_viewer(
     pdb_path="Videos/AF_model.pdb",
-    focus_resns=["FE"],
+    focus_resns=["AP1"],
     highlight_residues=[289,233,235],
     rotate_angles=(-220, -40, -160),
     title="ANS cataytic site")
@@ -79,7 +79,7 @@ render_protein_viewer(
 
 render_protein_viewer(
     pdb_path="Videos/LZerD_Model.pdb",
-    focus_resns=[],  # Not needed here
+    focus_resns=["HIS"],  # Not needed here
     highlight_residues=[289, 233, 235],  # Optional
     rotate_angles=(-220, -40, -160),
     title="ANS DFR interaction using LZerD model",
