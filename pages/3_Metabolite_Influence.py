@@ -5,110 +5,84 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import MDAnalysis as mda
 
+st.set_page_config(page_title="DFR metabolites Interaction", layout="wide")
+st.title("Influence of Flavonoid Metabolite Concentration on DFR Substrate Specificity")
 
-st.set_page_config(page_title="ANS DFR Interaction", layout="wide")
-st.title("Influence of flavonoid metabolite high concentration on DFR substrate specificity")
+# Section: Overview
 st.markdown("""
-            Aim of the study : Does a high concentration of metabolites may have an influence the substrate specificity of DFR?
-            """)
-st.title("Protein protein docking methods")
+**Study Aim:**  
+Does a high concentration of metabolites influence DFR substrate specificity?
+""")
 
+# Section: Video
+st.header("DFR and metabolites Overview")
 st.video("Videos/DFR_metabolites.mp4", autoplay=True)
 
+# Section: Heatmap Image
+st.header("Residue Interaction Heatmap (Precomputed)")
+st.image("Videos/Residence_time.png", caption="DFR–Metabolite Interaction")
 
-st.header("Residue Interaction Heatmap")
+# Section: Dynamic Heatmap from CSV
+st.header("Residue Total Residency Time Heatmap (CSV-Based)")
+csv_heatmap_path = "Videos/protein_interaction_summary.csv"
 
-# === Load the CSV File ===
+if os.path.exists(csv_heatmap_path):
+    df_heatmap = pd.read_csv(csv_heatmap_path)
+    df_heatmap["Residency Time (ns)"] = df_heatmap["Total Residency Time"] // 100
 
-st.header("Residue Total Residency Time Heatmap")
-
-# === Load the CSV File ===
-csv_path = "Videos/protein_interaction_summary.csv"  # Adjust path as needed
-if os.path.exists(csv_path):
-    df = pd.read_csv(csv_path)
-
-    # Convert to nanoseconds using integer division
-    df["Residency Time (ns)"] = df["Total Residency Time"] // 100
-
-    # Sort and prepare heatmap data
-    df_sorted = df.sort_values(by="Residency Time (ns)", ascending=False)
+    df_sorted = df_heatmap.sort_values(by="Residency Time (ns)", ascending=False)
     heatmap_data = df_sorted.set_index("Protein Residue")[["Residency Time (ns)"]]
-
-    # Normalize for color intensity
     normalized_data = (heatmap_data - heatmap_data.min()) / (heatmap_data.max() - heatmap_data.min())
 
-    # Create a smaller heatmap figure
     fig, ax = plt.subplots(figsize=(6, min(20, len(normalized_data) * 0.10)))
     sns.heatmap(normalized_data, cmap="viridis", linewidths=0.3, ax=ax,
                 cbar_kws={'label': 'Residency Time (ns, normalized)'})
     ax.set_title("Residue Residency Time in Nanoseconds")
     st.pyplot(fig)
 else:
-    st.error(f"CSV file not found at: {csv_path}")
+    st.error(f"CSV file not found at: {csv_heatmap_path}")
 
+# Section: 3D Structure Viewer
+st.header("Top 20 Interacting Residues on 3D Structure")
 
+pdb_path = "Videos/Vitis_DHK.pdb"
+csv_path = "Videos/top20_combined_binding_residues.csv"
 
-def plot_top_interacting_residues(pdb_file, matrix_file, top_n=15):
-    # Load interaction matrix data
-    data = np.load(matrix_file, allow_pickle=True)
-    interaction_matrix = data["interaction_matrix"]
-    protein_resnames = data["protein_resnames"]
-    protein_resids = data["protein_resids"]
-
-    # Aggregate interactions over all frames
-    interaction_counts = np.sum(interaction_matrix, axis=2)
-
-    # Map residue → total interaction count
-    residue_interactions = {resid: 0 for resid in protein_resids}
-    for i, resid in enumerate(protein_resids):
-        residue_interactions[resid] = np.sum(interaction_counts[:, i])
-
-    # Select top N residues
-    top_resids = sorted(residue_interactions, key=residue_interactions.get, reverse=True)[:top_n]
-
-    # Load PDB and compute residue center of mass
-    u = mda.Universe(pdb_file)
-    protein = u.select_atoms("protein")
-
-    with open(pdb_file, "r") as f:
+# Load PDB file
+try:
+    with open(pdb_path, "r") as f:
         pdb_data = f.read()
+except FileNotFoundError:
+    st.error(f"PDB file not found at: {pdb_path}")
+    st.stop()
 
-    view = py3Dmol.view(width=900, height=700)
-    view.addModel(pdb_data, "pdb")
-    view.setStyle({"cartoon": {"color": "white"}})
+# Load CSV of top residues
+try:
+    df = pd.read_csv(csv_path)
+    top_residues = df["Residue_ID"].tolist()
+    residue_labels = dict(zip(df["Residue_ID"], df["Residue"]))
+except FileNotFoundError:
+    st.error(f"CSV file not found at: {csv_path}")
+    st.stop()
 
-    # Highlight and label top interacting residues
-    for res in protein.residues:
-        if res.resid in top_resids:
-            resname = res.resname
-            resid = str(res.resid)
+# Initialize 3Dmol viewer
+view = py3Dmol.view(width=900, height=700)
+view.addModel(pdb_data, "pdb")
+view.setStyle({"cartoon": {"color": "white"}})
 
-            view.setStyle({"resi": resid}, {"stick": {"color": "yellow"}})
+# Highlight and label top residues
+for resid in top_residues:
+    resid_str = str(resid)
+    view.setStyle({"resi": resid_str}, {"stick": {"color": "yellow"}})
 
-            com = res.atoms.center_of_mass()
-            view.addLabel(f"{resname}-{resid}", {
-                "position": {"x": float(com[0]), "y": float(com[1]), "z": float(com[2])},
-                "fontColor": "black",
-                "backgroundColor": "white",
-                "fontSize": 12
-            })
+    label = residue_labels[resid]
+    view.addLabel(label, {
+        "backgroundColor": "white",
+        "fontColor": "black",
+        "fontSize": 12,
+        "resi": resid_str
+    })
 
-    view.zoomTo()
-    return view
-
-# === Streamlit Integration ===
-st.header("Top Protein-Ligand Interacting Residues (3D View)")
-
-# File paths
-pdb_path = "Videos/your_model.pdb"
-matrix_path = "Videos/your_interaction_matrix.npz"
-
-if st.button("Render Top Interactions"):
-    view = plot_top_interacting_residues(pdb_path, matrix_path, top_n=15)
-    st.components.v1.html(view._make_html(), height=750, scrolling=True)
-
-
-
-st.image("Videos/Residence_time.png", caption="DFR metabolite interaction")
+view.zoomTo()
+st.components.v1.html(view._make_html(), height=750, scrolling=True)
