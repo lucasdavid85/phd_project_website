@@ -12,7 +12,7 @@ def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angl
         pdb_data = f.read()
 
     st.subheader(title)
-    view = py3Dmol.view(width=350, height=800)
+    view = py3Dmol.view(width=1000)
     view.addModel(pdb_data, "pdb")
     view.setStyle({'cartoon': {'color': 'white'}})
 
@@ -85,8 +85,8 @@ render_protein_viewer(
 
 render_protein_viewer(
     pdb_path="Videos/LZerD_Model.pdb",
-    # focus_resns=["FE"],
-    # highlight_residues=[289,233,235],
+    focus_resns=["FE"],
+    highlight_residues=[289,233,235],
     rotate_angles=(-220, -40, -160),
     title="ANS DFR interaction using LZerD model")
     
