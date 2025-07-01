@@ -108,7 +108,7 @@ st.set_page_config(layout="wide")
 st.title("Interactive Network Viewer")
 
 # === Load the GraphML file ===
-graphml_path = "../Videos/DHK_bounded_dhk_nph_neighborhood.graphml"  # adjust path as needed
+graphml_path = "Videos/DHK_bounded_dhk_nph_neighborhood.graphml"  # adjust path as needed
 G = nx.read_graphml(graphml_path)
 
 # === Create a Pyvis Network ===
