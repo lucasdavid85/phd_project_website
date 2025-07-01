@@ -26,21 +26,23 @@ csv_path = "Videos/protein_interaction_summary.csv"  # Adjust path as needed
 if os.path.exists(csv_path):
     df = pd.read_csv(csv_path)
 
-    # Sort by Total Residency Time and extract only that column
-    df_sorted = df.sort_values(by="Total Residency Time", ascending=False)
-    heatmap_data = df_sorted.set_index("Protein Residue")[["Total Residency Time"]]
+    # Convert residency time to nanoseconds (ps / 100)
+    df["Residency Time (ns)"] = df["Total Residency Time"] / 100
 
-    # Normalize the values (optional for better color contrast)
+    # Sort and prepare heatmap data
+    df_sorted = df.sort_values(by="Residency Time (ns)", ascending=False)
+    heatmap_data = df_sorted.set_index("Protein Residue")[["Residency Time (ns)"]]
+
+    # Normalize values for color contrast
     heatmap_normalized = (heatmap_data - heatmap_data.min()) / (heatmap_data.max() - heatmap_data.min())
 
     # Plot the heatmap
     fig, ax = plt.subplots(figsize=(8, max(10, len(heatmap_normalized) * 0.15)))
-    sns.heatmap(heatmap_normalized, cmap="viridis", linewidths=0.5, ax=ax, cbar_kws={'label': 'Normalized Residency Time'})
-    ax.set_title("Total Residency Time per Residue")
+    sns.heatmap(heatmap_normalized, cmap="viridis", linewidths=0.5, ax=ax,
+                cbar_kws={'label': 'Residency Time (ns, normalized)'})
+    ax.set_title("Total Residency Time per Residue (in ns)")
     st.pyplot(fig)
 else:
     st.error(f"CSV file not found at path: {csv_path}")
-
-
 
 
