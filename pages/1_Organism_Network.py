@@ -87,7 +87,7 @@ st.markdown("""
 st.markdown("""Molecular dynamics simulations were performed to study the interactions of these DFRs with the substrate NPH (Naringenin).
             
          """)
-st.image("/nfs/mathusalem/ldavid/Communications/Videos/TIGHT_resMDVvZm_PUBLICATION.png", caption="DFR Organism MD simulation",)
+st.image("../Videos/TIGHT_resMDVvZm_PUBLICATION.png", caption="DFR Organism MD simulation",)
 
 
 

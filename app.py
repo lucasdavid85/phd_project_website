@@ -43,7 +43,7 @@ st.header("Images")
 st.header("3D Protein Structure Viewer with Custom Style")
 
 # Path to your local PDB file
-pdb_path = "/nfs/mathusalem/ldavid/Communications/Videos/Vitis_DHK.pdb"
+pdb_path = "../Videos/Vitis_DHK.pdb"
 
 if os.path.exists(pdb_path):
     with open(pdb_path, "r") as f:
@@ -116,7 +116,7 @@ else:
 
 # --- Section 5: Video ---
 st.header("Video")
-st.video("/nfs/mathusalem/ldavid/Communications/Videos/graph_evolution.mp4",autoplay=True)  # Supports local or URL path
+st.video("../Videos/graph_evolution.mp4",autoplay=True)  # Supports local or URL path
 
 # --- Section 6: Markdown and Uploads ---
 # st.header("Upload & Notes")
