@@ -87,15 +87,17 @@ st.markdown("""
 st.markdown("""Molecular dynamics simulations were performed to study the interactions of these DFRs with the substrate NPH (Naringenin).
             
          """)
-st.image("Videos/TIGHT_resMDVvZm_PUBLICATION.png", caption="DFR Organism MD simulation",)
+st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 
 
-
+# Optional video section
+st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
+st.video("Videos/DFR_DHQ.mp4", autoplay=True)
 
 
 
 
 
 # Optional video section
-st.header("Video")
+st.header("Graph evolution across simulation")
 st.video("Videos/graph_evolution.mp4", autoplay=True)
