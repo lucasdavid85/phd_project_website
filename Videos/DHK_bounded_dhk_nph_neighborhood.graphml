@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><graph edgedefault="undirected"><node id="F287"/>
+<node id="T154"/>
+<node id="G125"/>
+<node id="I217"/>
+<node id="N128"/>
+<node id="P199"/>
+<node id="DHK"/>
+<node id="Y137"/>
+<node id="F192"/>
+<node id="Q222"/>
+<node id="A124"/>
+<node id="S123"/>
+<node id="M194"/>
+<node id="T121"/>
+<node id="V79"/>
+<node id="F11"/>
+<node id="V188"/>
+<node id="S249"/>
+<node id="V127"/>
+<node id="T186"/>
+<node id="Q133"/>
+<node id="A80"/>
+<node id="P185"/>
+<node id="T81"/>
+<node id="D252"/>
+<node id="I129"/>
+<node id="P198"/>
+<node id="A155"/>
+<node id="S200"/>
+<node id="S196"/>
+<node id="Y158"/>
+<node id="NPH"/>
+<node id="I184"/>
+<node id="L187"/>
+<edge source="F287" target="Y137"/>
+<edge source="F287" target="T186"/>
+<edge source="F287" target="Q222"/>
+<edge source="F287" target="S249"/>
+<edge source="F287" target="N128"/>
+<edge source="T154" target="DHK"/>
+<edge source="G125" target="S123"/>
+<edge source="G125" target="DHK"/>
+<edge source="I217" target="DHK"/>
+<edge source="N128" target="A124"/>
+<edge source="N128" target="V127"/>
+<edge source="N128" target="I129"/>
+<edge source="N128" target="Q133"/>
+<edge source="N128" target="Y137"/>
+<edge source="N128" target="DHK"/>
+<edge source="P199" target="NPH"/>
+<edge source="DHK" target="S123"/>
+<edge source="DHK" target="A124"/>
+<edge source="DHK" target="A155"/>
+<edge source="DHK" target="Y158"/>
+<edge source="DHK" target="T186"/>
+<edge source="DHK" target="L187"/>
+<edge source="DHK" target="Q222"/>
+<edge source="DHK" target="NPH"/>
+<edge source="Y137" target="V127"/>
+<edge source="F192" target="F11"/>
+<edge source="F192" target="P198"/>
+<edge source="Q222" target="T186"/>
+<edge source="Q222" target="D252"/>
+<edge source="A124" target="I184"/>
+<edge source="S123" target="P185"/>
+<edge source="S123" target="NPH"/>
+<edge source="M194" target="S196"/>
+<edge source="M194" target="P198"/>
+<edge source="T121" target="V79"/>
+<edge source="T121" target="NPH"/>
+<edge source="F11" target="P198"/>
+<edge source="F11" target="NPH"/>
+<edge source="V188" target="NPH"/>
+<edge source="S249" target="T186"/>
+<edge source="V127" target="I184"/>
+<edge source="T186" target="L187"/>
+<edge source="A80" target="NPH"/>
+<edge source="P185" target="NPH"/>
+<edge source="T81" target="NPH"/>
+<edge source="S200" target="NPH"/>
+<edge source="S196" target="NPH"/>
+</graph></graphml>
