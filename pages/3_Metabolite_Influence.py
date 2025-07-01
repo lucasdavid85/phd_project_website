@@ -18,7 +18,7 @@ st.video("Videos/DFR_metabolites.mp4", autoplay=True)
 st.header("Residue Interaction Heatmap")
 
 # === Load the CSV File ===
-csv_path = "Videos/Protein_Residue_Interactions.csv"  # Adjust path as needed
+csv_path = "Videos/protein_interaction_summary.csv"  # Adjust path as needed
 if os.path.exists(csv_path):
     df = pd.read_csv(csv_path)
 
