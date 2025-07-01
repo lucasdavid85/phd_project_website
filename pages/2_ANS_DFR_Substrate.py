@@ -12,7 +12,7 @@ def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angl
         pdb_data = f.read()
 
     st.subheader(title)
-    view = py3Dmol.view(width=350, height=500)
+    view = py3Dmol.view(width=350, height=800)
     view.addModel(pdb_data, "pdb")
     view.setStyle({'cartoon': {'color': 'white'}})
 
@@ -81,7 +81,7 @@ render_protein_viewer(
     title="ANS cataytic site")
     
 
-st.image("Videos/ANS_DFR_interaction.png", caption="ANS DFR interaction")
+# st.image("Videos/ANS_DFR_interaction.png", caption="ANS DFR interaction")
 
 render_protein_viewer(
     pdb_path="Videos/LZerD_Model.pdb",
