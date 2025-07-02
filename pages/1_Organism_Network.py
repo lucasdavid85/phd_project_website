@@ -93,12 +93,7 @@ st.markdown("""
 st.markdown("""Molecular dynamics simulations were performed to study the interactions of these DFRs with the substrate NPH (Naringenin).
             
          """)
-# st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
-st.markdown("""
-<div oncontextmenu="return false;" style="pointer-events: none;">
-    <img src="Videos/MD_comparison.png" alt="DFR Organism MD simulation" width="100%">
-</div>
-""", unsafe_allow_html=True)
+st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 
 
 # Optional video section
@@ -154,10 +149,4 @@ st.components.v1.html(html_content, height=750, scrolling=True)
 ##################################################################################
 # Optional video section
 st.header("Graph evolution across simulation")
-# st.video("Videos/graph_evolution.mp4", autoplay=True)
-st.markdown("""
-<video width="100%" autoplay muted loop playsinline oncontextmenu="return false;" controlsList="nodownload nofullscreen noremoteplayback">
-  <source src="Videos/DFR_DHQ.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-""", unsafe_allow_html=True)
+st.video("Videos/graph_evolution.mp4", autoplay=True)
