@@ -96,6 +96,12 @@ st.markdown("""Molecular dynamics simulations were performed to study the intera
 st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 
 
+st.markdown("""
+Multiple sequence alignment between the four DFRs 
+""")
+st.image("Videos/IMAGE_VISUAL_ALIGNMENT_WEBSITE.png",caption="Multiple sequence alignment of DFRs")
+
+
 # Optional video section
 st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
 st.video("Videos/DFR_DHQ.mp4", autoplay=True)
