@@ -97,12 +97,22 @@ st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 
 
 
-uploaded_file = "Videos/V2.svg"
-if uploaded_file is not None:
-    svg_content = uploaded_file.read().decode("utf-8")
-    st.markdown(f"<div>{svg_content}</div>", unsafe_allow_html=True)
+# Load and display the SVG
+svg_path = "Videos/V2.svg"
 
+try:
+    with open(svg_path, "r") as f:
+        svg_content = f.read()
 
+    # Embed SVG with scrollable container if it's large
+    st.markdown("""
+    <div style='overflow-x: auto; border:1px solid #ccc; padding:10px'>
+    """ + svg_content + """
+    </div>
+    """, unsafe_allow_html=True)
+
+except FileNotFoundError:
+    st.error(f"SVG file not found at path: {svg_path}")
 
 # Optional video section
 st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
