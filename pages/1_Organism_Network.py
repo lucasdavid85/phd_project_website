@@ -95,12 +95,14 @@ st.markdown("""Molecular dynamics simulations were performed to study the intera
          """)
 st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 
-st.markdown("""
-### Multiple sequence alignment between the four DFRs
-<div style="overflow-x: auto; white-space: nowrap; border: 1px solid #ddd; padding: 10px;">
-    <img src="Videos/IMAGE_VISUAL_ALIGNMENT_WEBSITE.png" alt="Multiple sequence alignment of DFRs" style="max-height: 600px;">
-</div>
-""", unsafe_allow_html=True)
+
+
+uploaded_file = "Videos/V2.svg"
+if uploaded_file is not None:
+    svg_content = uploaded_file.read().decode("utf-8")
+    st.markdown(f"<div>{svg_content}</div>", unsafe_allow_html=True)
+
+
 
 # Optional video section
 st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
