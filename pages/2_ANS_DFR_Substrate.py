@@ -1,7 +1,7 @@
 import streamlit as st
 import py3Dmol
 import os
-
+from PIL import Image
 def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angles, title,
                           width=1200, height=800):
     if not os.path.exists(pdb_path):
@@ -67,6 +67,11 @@ st.image("Videos/ANS_cata.png", caption="ANS catalytic site")
 
 st.header("ANS DFR Interaction")
 st.image("Videos/compressed.gif", caption="ANS DFR interaction")
+
+
+image = Image.open("Videos/compressed.gif")
+resized = image.resize((800, 600))  # Width x Height in pixels
+st.image(resized, caption="ANS DFR interaction")
 
 render_protein_viewer(
     pdb_path="Videos/AF_model.pdb",
