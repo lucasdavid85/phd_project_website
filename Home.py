@@ -12,7 +12,7 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""<a href="pages/1_Organism_Network.py" target="_self">""", unsafe_allow_html=True)
-    st.image("Videos/test1.png")
+    st.image("Videos/DFR_alone.png")
     st.markdown("""
         <div style="text-align:center; margin-top:-10px">
             <h3 style="color:#1f77b4;">🧬 Organisms & Network</h3>
@@ -36,7 +36,7 @@ with col2:
 with col3:
     st.markdown("""
         <a href="pages/3_Metabolite_Influence.py" target="_self">""", unsafe_allow_html=True)
-    st.image("Videos/test1.png")
+    st.image("Videos/test.0003.png")
     st.markdown("""
                 <div style="text-align:center; margin-top:-10px">
                 <h3 style="color:#2a9d8f; margin-top:10px;">🧪 Metabolite Influence</h3>
