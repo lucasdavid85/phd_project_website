@@ -13,7 +13,7 @@ def get_image_path(filename):
 
 # Helper to display tile
 def clickable_tile(image_filename, label, description, page_name, color):
-    st.image(get_image_path(image_filename), use_column_width=True)
+    st.image(get_image_path(image_filename))
     st.markdown(f"<div style='text-align:center; color:{color}; font-weight:bold'>{label}</div>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align:center; font-size:14px'>{description}</p>", unsafe_allow_html=True)
     if st.button(f"Go to {label}", key=label, help=description):
@@ -42,7 +42,7 @@ with col2:
 
 with col3:
     clickable_tile(
-        image_filename="test.0003.png",
+        image_filename="test.00013.png",
         label="🧪 Metabolite Influence",
         description="Study how metabolites affect protein activity.",
         page_name="Metabolite_Influence",
