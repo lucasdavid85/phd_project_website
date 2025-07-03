@@ -3,31 +3,28 @@ import streamlit as st
 st.set_page_config(page_title="Thesis Portal", layout="wide")
 
 st.title("🎓 Welcome to the Thesis Data Portal")
-
 st.markdown("### 🔍 Explore a Topic:")
 
 # ---- TOPIC REDIRECTION SECTION ----
-# Create three columns for visual navigation
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown("""<a href="pages/1_Organism_Network.py" target="_self">""", unsafe_allow_html=True)
-    st.image("Videos/DFR_alone.png")
     st.markdown("""
-        <div style="text-align:center; margin-top:-10px">
-            <h3 style="color:#1f77b4;">🧬 Organisms & Network</h3>
-            <p style="font-size:14px;">Explore how proteins interact across organisms.</p>
-        </div>
+        <a href="pages/1_Organism_Network.py" target="_self">
+            <img src="Videos/DFR_alone.png" width="100%" style="border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-bottom:10px;" />
+            <div style="text-align:center">
+                <h3 style="color:#1f77b4;">🧬 Organisms & Network</h3>
+                <p style="font-size:14px;">Explore how proteins interact across organisms.</p>
+            </div>
         </a>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-        <a href="pages/2_ANS_DFR_Substrate.py" target="_self">""", unsafe_allow_html=True)
-    st.image("Videos/test1.png")
-    st.markdown("""
-                <div style="text-align:center; margin-top:-10px">
-                <h3 style="color:#e76f51; margin-top:10px;">🔬 ANS DFR Interaction</h3>
+        <a href="pages/2_ANS_DFR_Substrate.py" target="_self">
+            <img src="Videos/test1.png" width="100%" style="border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-bottom:10px;" />
+            <div style="text-align:center">
+                <h3 style="color:#e76f51;">🔬 ANS DFR Interaction</h3>
                 <p style="font-size:14px;">Investigate substrate specificity in enzymes.</p>
             </div>
         </a>
@@ -35,11 +32,10 @@ with col2:
 
 with col3:
     st.markdown("""
-        <a href="pages/3_Metabolite_Influence.py" target="_self">""", unsafe_allow_html=True)
-    st.image("Videos/test.0003.png")
-    st.markdown("""
-                <div style="text-align:center; margin-top:-10px">
-                <h3 style="color:#2a9d8f; margin-top:10px;">🧪 Metabolite Influence</h3>
+        <a href="pages/3_Metabolite_Influence.py" target="_self">
+            <img src="Videos/test.0003.png" width="100%" style="border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-bottom:10px;" />
+            <div style="text-align:center">
+                <h3 style="color:#2a9d8f;">🧪 Metabolite Influence</h3>
                 <p style="font-size:14px;">Study how metabolites affect protein activity.</p>
             </div>
         </a>
