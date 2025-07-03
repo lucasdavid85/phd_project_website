@@ -8,15 +8,15 @@ st.markdown("### 🔍 Explore a Topic:")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.image("Videos/DFR_alone.png", use_column_width=True)
+    st.image("Videos/DFR_alone.png")
     st.page_link("pages/1_Organism_Network.py", label="🧬 Organisms & Network")
 
 with col2:
-    st.image("Videos/test1.png", use_column_width=True)
+    st.image("Videos/test1.png")
     st.page_link("pages/2_ANS_DFR_Substrate.py", label="🔬 ANS DFR Interaction")
 
 with col3:
-    st.image("Videos/test.00013.png", use_column_width=True)
+    st.image("Videos/test.00013.png")
     st.page_link("pages/3_Metabolite_Influence.py", label="🧪 Metabolite Influence")
 
 # Contact section
