@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
 import os
 
 st.set_page_config(page_title="Thesis Portal", layout="wide")
@@ -9,43 +8,39 @@ st.markdown("### 🔍 Explore a Topic:")
 
 # Helper function to build image path
 def get_image_path(filename):
-    return os.path.join("Videos", filename)
+    return os.path.join("images", filename)
 
-# Helper to display tile
-def clickable_tile(image_filename, label, description, page_name, color):
+# Helper to display tile (non-clickable image, text only)
+def topic_tile(image_filename, label, description, color):
     st.image(get_image_path(image_filename))
     st.markdown(f"<div style='text-align:center; color:{color}; font-weight:bold'>{label}</div>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align:center; font-size:14px'>{description}</p>", unsafe_allow_html=True)
-    if st.button(f"Go to {label}", key=label, help=description):
-        switch_page(page_name)
+    st.markdown("---")
 
 # ---- TOPIC REDIRECTION SECTION ----
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    clickable_tile(
+    topic_tile(
         image_filename="DFR_alone.png",
         label="🧬 Organisms & Network",
-        description="Explore how proteins interact across organisms.",
-        page_name="Organism_Network.py",
+        description="Go to the sidebar and click 'Organism Network' to explore this topic.",
         color="#1f77b4"
     )
 
 with col2:
-    clickable_tile(
+    topic_tile(
         image_filename="test1.png",
         label="🔬 ANS DFR Interaction",
-        description="Investigate substrate specificity in enzymes.",
-        page_name="pages/ANS_DFR_Substrate/py",
+        description="Go to the sidebar and click 'ANS DFR Substrate' to explore this topic.",
         color="#e76f51"
     )
 
 with col3:
-    clickable_tile(
+    topic_tile(
         image_filename="test.00013.png",
         label="🧪 Metabolite Influence",
-        description="Study how metabolites affect protein activity.",
-        page_name="Metabolite_Influence",
+        description="Go to the sidebar and click 'Metabolite Influence' to explore this topic.",
         color="#2a9d8f"
     )
 
