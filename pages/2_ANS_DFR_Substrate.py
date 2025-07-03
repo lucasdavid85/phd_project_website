@@ -18,11 +18,11 @@ def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angl
     # Default white cartoon
     view.setStyle({'cartoon': {'color': 'white'}})
 
-    # 🟦 Color ANS residues 1–350 in blue
-    view.setStyle({'resi': list(range(1, 351))}, {'cartoon': {'color': 'skyblue'}})
+# 🟦 Color residues 1–352 in skyblue
+view.setStyle({'resi': list(range(1, 353))}, {'cartoon': {'color': 'skyblue'}})
 
-    # 🟥 Color DFR residues 351–370 in red
-    view.setStyle({'resi': list(range(351, 371))}, {'cartoon': {'color': 'lightcoral'}})
+# 🟩 Color residues 354–671 in lightgreen
+view.setStyle({'resi': list(range(354, 672))}, {'cartoon': {'color': 'lightgreen'}})
 
     # Highlight specific residues (optional)
     for resid in highlight_residues:
@@ -71,8 +71,8 @@ st.image("Videos/compressed.gif", caption="ANS DFR interaction")
 
 render_protein_viewer(
     pdb_path="Videos/AF_model.pdb",
-    focus_resns=["AP1"],
-    highlight_residues=[289,233,235],
+    focus_resns=["AP1","FE1"],
+    highlight_residues=[289,233,235,353],
     rotate_angles=(-220, -40, -160),
     title="ANS cataytic site")
     
@@ -82,7 +82,7 @@ render_protein_viewer(
 render_protein_viewer(
     pdb_path="Videos/LZerD_Model.pdb",
     focus_resns=["HIS"],  # Not needed here
-    highlight_residues=[289, 233, 235],  # Optional
+    highlight_residues=[289, 233, 235,353],  # Optional
     rotate_angles=(-220, -40, -160),
     title="ANS DFR interaction using LZerD model",
     width=1400,
