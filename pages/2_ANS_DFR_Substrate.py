@@ -68,7 +68,7 @@ st.image("Videos/ANS_cata.png", caption="ANS catalytic site")
 # === Section: ANS–DFR Interaction ===
 st.header("ANS–DFR Interaction")
 
-st.image("Videos/compressed.gif", caption="ANS DFR interaction", use_column_width=True)
+st.image("Videos/compressed.gif", caption="ANS DFR interaction")
 
 # === 3D View: ANS catalytic site ===
 render_protein_viewer(
