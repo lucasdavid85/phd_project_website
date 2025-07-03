@@ -24,8 +24,8 @@ with col1:
 with col2:
     st.markdown("""
         <a href="pages/2_ANS_DFR_Substrate.py" target="_self">""", unsafe_allow_html=True)
-            st.image("Videos/test1.png")
-             st.markdown("""
+    st.image("Videos/test1.png")
+    st.markdown("""
                 <div style="text-align:center; margin-top:-10px">
                 <h3 style="color:#e76f51; margin-top:10px;">🔬 ANS DFR Interaction</h3>
                 <p style="font-size:14px;">Investigate substrate specificity in enzymes.</p>
@@ -36,8 +36,8 @@ with col2:
 with col3:
     st.markdown("""
         <a href="pages/3_Metabolite_Influence.py" target="_self">""", unsafe_allow_html=True)
-            st.image("Videos/test1.png")
-             st.markdown("""
+    st.image("Videos/test1.png")
+    st.markdown("""
                 <div style="text-align:center; margin-top:-10px">
                 <h3 style="color:#2a9d8f; margin-top:10px;">🧪 Metabolite Influence</h3>
                 <p style="font-size:14px;">Study how metabolites affect protein activity.</p>
