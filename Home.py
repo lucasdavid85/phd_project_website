@@ -5,21 +5,28 @@ st.set_page_config(page_title="Thesis Portal", layout="wide")
 st.title("🎓 Welcome to the Thesis Data Portal")
 st.markdown("### 🔍 Explore a Topic:")
 
+# Uniform image display size (e.g., 250px height)
+IMAGE_HEIGHT = 250
+
+# Helper to make consistent tile layout
+def display_tile(image_path, link_path, label, height=IMAGE_HEIGHT):
+    st.image(image_path,  output_format="auto", caption="", clamp=True)
+    st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)  # vertical spacing
+    st.page_link(link_path, label=label)
+
+# ---- Tile Layout ----
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.image("Videos/DFR_alone.png")
-    st.page_link("pages/1_Organism_Network.py", label="🧬 Organisms & Network")
+    display_tile("Videos/DFR_alone.png", "pages/1_Organism_Network.py", "🧬 Organisms & Network")
 
 with col2:
-    st.image("Videos/test1.png")
-    st.page_link("pages/2_ANS_DFR_Substrate.py", label="🔬 ANS DFR Interaction")
+    display_tile("Videos/test1.png", "pages/2_ANS_DFR_Substrate.py", "🔬 ANS DFR Interaction")
 
 with col3:
-    st.image("Videos/test.00013.png")
-    st.page_link("pages/3_Metabolite_Influence.py", label="🧪 Metabolite Influence")
+    display_tile("Videos/test.00013.png", "pages/3_Metabolite_Influence.py", "🧪 Metabolite Influence")
 
-# Contact section
+# ---- Contact Section ----
 st.header("📬 Contact")
 
 with st.form("contact_form"):
