@@ -8,7 +8,7 @@ st.markdown("### 🔍 Explore a Topic:")
 
 # Helper function to build image path
 def get_image_path(filename):
-    return os.path.join("images", filename)
+    return os.path.join("Videos", filename)
 
 # Helper to display tile (non-clickable image, text only)
 def topic_tile(image_filename, label, description, color):
