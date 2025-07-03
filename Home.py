@@ -11,13 +11,13 @@ st.markdown("### 🔍 Explore a Topic:")
 col1, col2, col3 = st.columns(3)
 
 with col1:
+    st.markdown("""<a href="pages/1_Organism_Network.py" target="_self">""", unsafe_allow_html=True)
+    st.image("Videos/test1.png", use_column_width=True)
     st.markdown("""
-        <a href="pages/1_Organism_Network.py" target="_self">
-            <div style="padding:10px; background-color:#f9f9f9; border-radius:12px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.08);">
-                <img src="Videos/test1.png" width="100%" style="border-radius:10px;">
-                <h3 style="color:#1f77b4; margin-top:10px;">🧬 Organisms & Network</h3>
-                <p style="font-size:14px;">Explore how proteins interact across organisms.</p>
-            </div>
+        <div style="text-align:center; margin-top:-10px">
+            <h3 style="color:#1f77b4;">🧬 Organisms & Network</h3>
+            <p style="font-size:14px;">Explore how proteins interact across organisms.</p>
+        </div>
         </a>
     """, unsafe_allow_html=True)
 
