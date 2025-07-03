@@ -69,10 +69,6 @@ st.header("ANS DFR Interaction")
 st.image("Videos/compressed.gif", caption="ANS DFR interaction")
 
 
-image = Image.open("Videos/compressed.gif")
-resized = image.resize((800, 600))  # Width x Height in pixels
-st.image(resized, caption="ANS DFR interaction")
-
 render_protein_viewer(
     pdb_path="Videos/AF_model.pdb",
     focus_resns=["AP1"],
