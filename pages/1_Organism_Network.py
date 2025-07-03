@@ -116,7 +116,7 @@ except FileNotFoundError:
 
 # Optional video section
 st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
-st.video("Videos/DFR_DHQ.mp4", autoplay=True)
+st.video("Videos/DFR_DHQ.mp4", start_time=0)
 
 
 ##################################################################################
