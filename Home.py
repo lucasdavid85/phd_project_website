@@ -27,7 +27,7 @@ with col1:
         image_filename="DFR_alone.png",
         label="🧬 Organisms & Network",
         description="Explore how proteins interact across organisms.",
-        page_name="Organism_Network",
+        page_name="Organism_Network.py",
         color="#1f77b4"
     )
 
@@ -36,7 +36,7 @@ with col2:
         image_filename="test1.png",
         label="🔬 ANS DFR Interaction",
         description="Investigate substrate specificity in enzymes.",
-        page_name="ANS_DFR_Substrate",
+        page_name="pages/ANS_DFR_Substrate/py",
         color="#e76f51"
     )
 
