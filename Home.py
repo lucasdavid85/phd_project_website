@@ -14,7 +14,7 @@ with col1:
     st.markdown("""
         <a href="pages/1_Organism_Network.py" target="_self">
             <div style="padding:10px; background-color:#f9f9f9; border-radius:12px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.08);">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Protein-protein_interaction_network.svg/640px-Protein-protein_interaction_network.svg.png" width="100%" style="border-radius:10px;">
+                <img src="Videos/test1.png" width="100%" style="border-radius:10px;">
                 <h3 style="color:#1f77b4; margin-top:10px;">🧬 Organisms & Network</h3>
                 <p style="font-size:14px;">Explore how proteins interact across organisms.</p>
             </div>
@@ -25,7 +25,7 @@ with col2:
     st.markdown("""
         <a href="pages/2_ANS_DFR_Substrate.py" target="_self">
             <div style="padding:10px; background-color:#f9f9f9; border-radius:12px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.08);">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Protein_structure.svg/640px-Protein_structure.svg.png" width="100%" style="border-radius:10px;">
+                <img src="Videos/test1.png" width="100%" style="border-radius:10px;">
                 <h3 style="color:#e76f51; margin-top:10px;">🔬 ANS DFR Interaction</h3>
                 <p style="font-size:14px;">Investigate substrate specificity in enzymes.</p>
             </div>
