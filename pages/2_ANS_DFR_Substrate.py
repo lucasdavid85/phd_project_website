@@ -18,11 +18,11 @@ def render_protein_viewer(pdb_path, focus_resns, highlight_residues, rotate_angl
     # Default white cartoon
     view.setStyle({'cartoon': {'color': 'white'}})
 
-# 🟦 Color residues 1–352 in skyblue
-view.setStyle({'resi': list(range(1, 353))}, {'cartoon': {'color': 'skyblue'}})
+# Color chain F in lightgreen
+view.setStyle({'chain': 'F'}, {'cartoon': {'color': 'lightgreen'}})
 
-# 🟩 Color residues 354–671 in lightgreen
-view.setStyle({'resi': list(range(354, 672))}, {'cartoon': {'color': 'lightgreen'}})
+# Color chain A (or other) in skyblue
+view.setStyle({'chain': 'D'}, {'cartoon': {'color': 'skyblue'}})
 
     # Highlight specific residues (optional)
     for resid in highlight_residues:
