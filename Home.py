@@ -1,45 +1,48 @@
 import streamlit as st
+import base64
 
 st.set_page_config(page_title="Thesis Portal", layout="wide")
 
 st.title("🎓 Welcome to the Thesis Data Portal")
 st.markdown("### 🔍 Explore a Topic:")
 
+# Helper to simulate a clickable image+text block
+def clickable_tile(image_path, label, description, page_file, color):
+    if st.button(f"{label}", key=label, help=description):
+        st.switch_page(page_file)
+    st.image(image_path, use_column_width=True)
+    st.markdown(f"<div style='text-align:center; color:{color}; font-weight:bold'>{label}</div>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align:center; font-size:14px'>{description}</p>", unsafe_allow_html=True)
+
 # ---- TOPIC REDIRECTION SECTION ----
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown("""
-        <a href="pages/1_Organism_Network.py" target="_self">
-            <img src="Videos/DFR_alone.png" width="100%" style="border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-bottom:10px;" />
-            <div style="text-align:center">
-                <h3 style="color:#1f77b4;">🧬 Organisms & Network</h3>
-                <p style="font-size:14px;">Explore how proteins interact across organisms.</p>
-            </div>
-        </a>
-    """, unsafe_allow_html=True)
+    clickable_tile(
+        image_path="Videos/DFR_alone.png",
+        label="🧬 Organisms & Network",
+        description="Explore how proteins interact across organisms.",
+        page_file="pages/1_Organism_Network.py",
+        color="#1f77b4"
+    )
 
 with col2:
-    st.markdown("""
-        <a href="pages/2_ANS_DFR_Substrate.py" target="_self">
-            <img src="Videos/test1.png" width="100%" style="border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-bottom:10px;" />
-            <div style="text-align:center">
-                <h3 style="color:#e76f51;">🔬 ANS DFR Interaction</h3>
-                <p style="font-size:14px;">Investigate substrate specificity in enzymes.</p>
-            </div>
-        </a>
-    """, unsafe_allow_html=True)
+    clickable_tile(
+        image_path="Videos/test1.png",
+        label="🔬 ANS DFR Interaction",
+        description="Investigate substrate specificity in enzymes.",
+        page_file="pages/2_ANS_DFR_Substrate.py",
+        color="#e76f51"
+    )
 
 with col3:
-    st.markdown("""
-        <a href="pages/3_Metabolite_Influence.py" target="_self">
-            <img src="Videos/test.0003.png" width="100%" style="border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin-bottom:10px;" />
-            <div style="text-align:center">
-                <h3 style="color:#2a9d8f;">🧪 Metabolite Influence</h3>
-                <p style="font-size:14px;">Study how metabolites affect protein activity.</p>
-            </div>
-        </a>
-    """, unsafe_allow_html=True)
+    clickable_tile(
+        image_path="Videos/test.0003.png",
+        label="🧪 Metabolite Influence",
+        description="Study how metabolites affect protein activity.",
+        page_file="pages/3_Metabolite_Influence.py",
+        color="#2a9d8f"
+    )
 
 # ---- CONTACT FORM ----
 st.header("📬 Contact")
