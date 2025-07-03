@@ -65,7 +65,8 @@ st.image("Videos/ANS_cata.png", caption="ANS catalytic site")
 
 # === Display 3 Viewers in Columns ===
 
-
+st.header("ANS DFR Interaction")
+st.image("Videos/compressed.gif", caption="ANS DFR interaction")
 
 render_protein_viewer(
     pdb_path="Videos/AF_model.pdb",

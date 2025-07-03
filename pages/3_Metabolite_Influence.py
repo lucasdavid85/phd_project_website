@@ -25,27 +25,27 @@ st.header("Residue Interaction Heatmap (Precomputed)")
 st.image("Videos/Residence_time.png", caption="DFR–Metabolite Interaction")
 
 # Section: Dynamic Heatmap from CSV
-st.header("Residue Total Residency Time Heatmap (CSV-Based)")
-csv_heatmap_path = "Videos/protein_interaction_summary.csv"
+# st.header("Residue Total Residency Time Heatmap (CSV-Based)")
+# csv_heatmap_path = "Videos/protein_interaction_summary.csv"
 
-if os.path.exists(csv_heatmap_path):
-    df_heatmap = pd.read_csv(csv_heatmap_path)
-    df_heatmap["Residency Time (ns)"] = df_heatmap["Total Residency Time"] // 100
+# if os.path.exists(csv_heatmap_path):
+#     df_heatmap = pd.read_csv(csv_heatmap_path)
+#     df_heatmap["Residency Time (ns)"] = df_heatmap["Total Residency Time"] // 100
 
-    df_sorted = df_heatmap.sort_values(by="Residency Time (ns)", ascending=False)
-    heatmap_data = df_sorted.set_index("Protein Residue")[["Residency Time (ns)"]]
-    normalized_data = (heatmap_data - heatmap_data.min()) / (heatmap_data.max() - heatmap_data.min())
+#     df_sorted = df_heatmap.sort_values(by="Residency Time (ns)", ascending=False)
+#     heatmap_data = df_sorted.set_index("Protein Residue")[["Residency Time (ns)"]]
+#     normalized_data = (heatmap_data - heatmap_data.min()) / (heatmap_data.max() - heatmap_data.min())
 
-    fig, ax = plt.subplots(figsize=(6, min(20, len(normalized_data) * 0.10)))
-    sns.heatmap(normalized_data, cmap="viridis", linewidths=0.3, ax=ax,
-                cbar_kws={'label': 'Residency Time (ns, normalized)'})
-    ax.set_title("Residue Residency Time in Nanoseconds")
-    st.pyplot(fig)
-else:
-    st.error(f"CSV file not found at: {csv_heatmap_path}")
+#     fig, ax = plt.subplots(figsize=(6, min(20, len(normalized_data) * 0.10)))
+#     sns.heatmap(normalized_data, cmap="viridis", linewidths=0.3, ax=ax,
+#                 cbar_kws={'label': 'Residency Time (ns, normalized)'})
+#     ax.set_title("Residue Residency Time in Nanoseconds")
+#     st.pyplot(fig)
+# else:
+#     st.error(f"CSV file not found at: {csv_heatmap_path}")
 
-# Section: 3D Structure Viewer
-st.header("Top 20 Interacting Residues on 3D Structure")
+# # Section: 3D Structure Viewer
+# st.header("Top 20 Interacting Residues on 3D Structure")
 
 
 # Custom Atom and Molecule parser
