@@ -18,7 +18,7 @@ Does a high concentration of metabolites influence DFR substrate specificity?
 
 # Section: Video
 st.header("DFR and metabolites Overview")
-st.video("Videos/DFR_metabolites.mp4", autoplay=True)
+st.video("Videos/DFR_metabolites.mp4",  start_time=0)
 
 # Section: Heatmap Image
 st.header("Residue Interaction Heatmap (Precomputed)")
@@ -128,4 +128,4 @@ for resid in top_residues:
         })
 
 view.zoomTo()
-st.components.v1.html(view._make_html(), height=750, scrolling=True)
+st.components.v1.html(view._make_html(), height=500, scrolling=False)
