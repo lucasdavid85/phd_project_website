@@ -128,4 +128,12 @@ for resid in top_residues:
         })
 
 view.zoomTo()
-st.components.v1.html(view._make_html(), height=500, scrolling=False)
+html_str = f"""
+<div style="display: flex; justify-content: center; align-items: center; width: 100%; overflow-x: auto;">
+  <div style="max-width: 100%; height: auto;">
+    {view._make_html()}
+  </div>
+</div>
+"""
+st.components.v1.html(html_str, height=750, scrolling=False)
+
