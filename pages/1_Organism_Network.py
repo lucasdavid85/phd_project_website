@@ -167,4 +167,4 @@ st.components.v1.html(html_content, height=750, scrolling=True)
 ##################################################################################
 # Optional video section
 st.header("Graph evolution across simulation")
-st.video("Videos/graph_evolution.mp4", autoplay=True)
+st.video("Videos/graph_evolution.mp4",start_time=0)
