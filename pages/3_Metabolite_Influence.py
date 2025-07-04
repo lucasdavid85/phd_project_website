@@ -51,9 +51,6 @@ class Molecule:
         z = sum(atom.z for atom in atoms) / len(atoms)
         return {"x": x, "y": y, "z": z}
 
-# === Streamlit Setup ===
-st.title("Top Interacting Residues with Properly Positioned Labels")
-
 # === File Paths ===
 pdb_path = "Videos/Vitis_DHK.pdb"
 csv_path = "Videos/top20_combined_binding_residues.csv"
@@ -88,7 +85,11 @@ view.setStyle({"cartoon": {"color": "white"}})
 for resid in top_residues:
     resid_str = str(resid)
     label = residue_labels[resid]
+
+    # Highlight the residue
     view.setStyle({"resi": resid_str}, {"stick": {"color": "yellow"}})
+
+    # Get position of the residue
     pos = mol.get_residue_com(resid)
     if pos:
         view.addLabel(label, {
@@ -100,7 +101,7 @@ for resid in top_residues:
 
 view.zoomTo()
 
-# === Embed viewer in responsive frame ===
+# === Embed viewer in a responsive, framed HTML container ===
 viewer_html = view._make_html()
 body_start = viewer_html.find("<body>") + len("<body>")
 body_end = viewer_html.find("</body>")
