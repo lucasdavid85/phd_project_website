@@ -128,12 +128,43 @@ for resid in top_residues:
         })
 
 view.zoomTo()
-html_str = f"""
-<div style="display: flex; justify-content: center; align-items: center; width: 100%; overflow-x: auto;">
-  <div style="max-width: 100%; height: auto;">
-    {view._make_html()}
-  </div>
-</div>
+# Generate HTML string
+viewer_html = view._make_html()
+
+# Extract the JS + body only
+body_start = viewer_html.find("<body>") + len("<body>")
+body_end = viewer_html.find("</body>")
+body_content = viewer_html[body_start:body_end]
+
+# Optional: you can tune height here (e.g., 60vh or 70vh)
+responsive_wrapper = f"""
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      .viewer-container {{
+        width: 100vw;
+        height: 70vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }}
+      canvas {{
+        width: 100% !important;
+        height: 100% !important;
+      }}
+    </style>
+  </head>
+  <body>
+    <div class="viewer-container">
+      {body_content}
+    </div>
+  </body>
+</html>
 """
-st.components.v1.html(html_str, height=750, scrolling=False)
+
+# Render in Streamlit
+st.components.v1.html(responsive_wrapper, height=600, scrolling=False)
 
