@@ -1,4 +1,4 @@
-import streamlit as st
+mport streamlit as st
 import py3Dmol
 import os
 import pandas as pd
@@ -23,6 +23,30 @@ st.video("Videos/DFR_metabolites.mp4",  start_time=0)
 # Section: Heatmap Image
 st.header("Residue Interaction Heatmap (Precomputed)")
 st.image("Videos/Residence_time.png", caption="DFR–Metabolite Interaction")
+
+# Section: Dynamic Heatmap from CSV
+# st.header("Residue Total Residency Time Heatmap (CSV-Based)")
+# csv_heatmap_path = "Videos/protein_interaction_summary.csv"
+
+# if os.path.exists(csv_heatmap_path):
+#     df_heatmap = pd.read_csv(csv_heatmap_path)
+#     df_heatmap["Residency Time (ns)"] = df_heatmap["Total Residency Time"] // 100
+
+#     df_sorted = df_heatmap.sort_values(by="Residency Time (ns)", ascending=False)
+#     heatmap_data = df_sorted.set_index("Protein Residue")[["Residency Time (ns)"]]
+#     normalized_data = (heatmap_data - heatmap_data.min()) / (heatmap_data.max() - heatmap_data.min())
+
+#     fig, ax = plt.subplots(figsize=(6, min(20, len(normalized_data) * 0.10)))
+#     sns.heatmap(normalized_data, cmap="viridis", linewidths=0.3, ax=ax,
+#                 cbar_kws={'label': 'Residency Time (ns, normalized)'})
+#     ax.set_title("Residue Residency Time in Nanoseconds")
+#     st.pyplot(fig)
+# else:
+#     st.error(f"CSV file not found at: {csv_heatmap_path}")
+
+# # Section: 3D Structure Viewer
+# st.header("Top 20 Interacting Residues on 3D Structure")
+
 
 # Custom Atom and Molecule parser
 class Atom:
@@ -51,6 +75,10 @@ class Molecule:
         z = sum(atom.z for atom in atoms) / len(atoms)
         return {"x": x, "y": y, "z": z}
 
+# === Streamlit Setup ===
+st.set_page_config(page_title="3D Residue Labeling", layout="wide")
+st.title("Top Interacting Residues with Properly Positioned Labels")
+
 # === File Paths ===
 pdb_path = "Videos/Vitis_DHK.pdb"
 csv_path = "Videos/top20_combined_binding_residues.csv"
@@ -77,7 +105,7 @@ except FileNotFoundError:
     st.stop()
 
 # === Initialize 3D viewer ===
-view = py3Dmol.view(width=800, height=600)
+view = py3Dmol.view(width=900, height=700)
 view.addModel(pdb_data, "pdb")
 view.setStyle({"cartoon": {"color": "white"}})
 
@@ -100,42 +128,4 @@ for resid in top_residues:
         })
 
 view.zoomTo()
-
-# === Embed viewer in a responsive, framed HTML container ===
-viewer_html = view._make_html()
-body_start = viewer_html.find("<body>") + len("<body>")
-body_end = viewer_html.find("</body>")
-body_content = viewer_html[body_start:body_end]
-
-responsive_html = f"""
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-    <style>
-      .framed-viewer {{
-        width: 95vw;
-        max-width: 900px;
-        height: 70vh;
-        margin: auto;
-        border: 5px solid #444;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
-      }}
-      canvas {{
-        width: 100% !important;
-        height: 100% !important;
-        display: block;
-      }}
-    </style>
-  </head>
-  <body>
-    <div class=\"framed-viewer\">
-      {body_content}
-    </div>
-  </body>
-</html>
-"""
-
-st.components.v1.html(responsive_html, height=600, scrolling=False)
+st.components.v1.html(view._make_html(), height=750, scrolling=True)
