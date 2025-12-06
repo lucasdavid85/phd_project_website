@@ -119,10 +119,17 @@ st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate
 st.video("Videos/DFR_DHQ.mp4", start_time=0)
 
 
-st.image("Videos/ligand_animation_DHK.gif", caption="ORCA quantum calculation of DHK ligand cycle B rotation")
 
-st.image("Videos/ligand_animation2.gif", caption="ORCA quantum calculation of DHQ ligand cycle B rotation")
+col4, col5, col6 = st.columns(3)
 
+with col4:
+    st.image("Videos/ligand_animation_DHK.gif", caption="ORCA quantum calculation of DHK ligand cycle B rotation")
+
+with col5:
+    st.image("Videos/ligand_animation2.gif", caption="ORCA quantum calculation of DHQ ligand cycle B rotation")
+
+with col6:
+    st.image("Videos/ligand_animation_DHM.gif", caption="ORCA quantum calculation of DHM ligand cycle B rotation")
 
 
 ##################################################################################
