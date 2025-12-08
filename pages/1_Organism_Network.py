@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 from pyvis.network import Network
 
 
+import pandas as pd
+import imageio.v2 as imageio
+from io import BytesIO
 
 st.set_page_config(page_title="Organism Network", layout="wide")
 st.title("Catalytic site of Vitis vinifera DFRs")
@@ -134,6 +137,104 @@ with col6:
 
 ##################################################################################
 
+
+# --- Your data as a string (you can also load from CSV) ---
+DATA = """Angle DHK DHQ DHM
+-180 1.144716292 1.167752184 1.722496125
+-170 1.038353347 1.108414839 1.609782779
+-160 0.9508596278 1.065323727 1.464351061
+-150 0.8067205809 0.9784826181 0.9814130899
+-140 0.6138051816 0.8102471872 0.9876819148
+-130 0.3897715613 0.5995042288 0.687060699
+-120 0.2053149968 0.4186244713 0.4107743212
+-110 0.1053903044 0.2767695606 0.1862073174
+-100 0.09393197186 0.2365398946 0.04681224604
+-90 0.1659889452 0.3118975704 0
+-80 0.361075529 0.4998242652 0.06858056801
+-70 0.7046435292 0.8463478375 0.2618975736
+-60 1.193674622 1.291980339 0.5726907264
+-50 1.680936137 1.750922328 0.9035579241
+-40 1.939727536 2.001882402 1.083320714
+-30 1.945506904 2.017250122 1.111564939
+-20 1.768825188 1.916773221 1.053790093
+-10 1.555114107 1.757467257 0.9942456694
+0 1.359845545 1.600119125 0.9716113836
+10 1.219622161 1.449792829 0.9826618347
+20 1.103294357 1.288227829 1.003965799
+30 0.9469251402 1.094270763 0.940888494
+40 0.7022276157 0.7934550195 0.802955521
+50 0.4091616204 0.4688378215 0.6266816868
+60 0.1537838756 0.1953689634 0.4473895297
+70 0.008778864802 0.02084588219 0.2825489278
+80 0 0 0.2545808071
+90 0.09864457192 0.1027673127 0.3687499764
+100 0.3195531924 0.3145833132 0.600778074
+110 0.6405559329 0.6213102013 0.9259788565
+120 1.048795113 1.002591552 1.318712265
+130 1.468498902 1.394458997 1.712430864
+140 1.746573683 1.641396732 1.998801328
+150 1.74761535 1.666409281 2.080233301
+160 1.557561396 1.503721038 1.983521459
+170 1.319565679 1.307843792 1.84393186
+180 1.144716292 1.167752184 1.722496125
+"""
+
+@st.cache_data
+def load_data():
+    df = pd.read_csv(pd.compat.StringIO(DATA), sep=r"\s+")
+    return df
+
+def make_curve_gif(df, duration=0.2):
+    frames = []
+
+    angles = df["Angle"]
+    dhk = df["DHK"]
+    dhq = df["DHQ"]
+    dhm = df["DHM"]
+
+    for i in range(1, len(df) + 1):
+        fig, ax = plt.subplots()
+
+        # plot partial curves up to step i
+        ax.plot(angles[:i], dhk[:i], label="DHK")
+        ax.plot(angles[:i], dhq[:i], label="DHQ")
+        ax.plot(angles[:i], dhm[:i], label="DHM")
+
+        ax.set_xlabel("Angle (°)")
+        ax.set_ylabel("Energy (kcal/mol)")
+        ax.set_title("Energy vs Angle – progressive drawing")
+        ax.legend()
+        ax.grid(True)
+
+        buf = BytesIO()
+        fig.savefig(buf, format="png", bbox_inches="tight")
+        plt.close(fig)
+        buf.seek(0)
+        frames.append(imageio.imread(buf))
+
+    gif_bytes = BytesIO()
+    imageio.mimsave(gif_bytes, frames, format="GIF", duration=duration)
+    gif_bytes.seek(0)
+    return gif_bytes
+
+st.title("Energy vs Angle – animated curves")
+
+df = load_data()
+st.dataframe(df)
+
+if st.button("Generate GIF"):
+    gif = make_curve_gif(df, duration=0.2)
+    st.image(gif, caption="Progressive drawing of DHK / DHQ / DHM", use_column_width=True)
+
+
+
+
+
+
+
+
+
+######################################################################################
 # Graph to print 
 st.set_page_config(layout="wide")
 st.title("Interactive Network Viewer")
