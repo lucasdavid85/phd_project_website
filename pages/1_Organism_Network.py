@@ -5,6 +5,7 @@ import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
 from pyvis.network import Network
+from io import StringIO
 
 
 import pandas as pd
@@ -180,9 +181,11 @@ DATA = """Angle DHK DHQ DHM
 """
 
 @st.cache_data
+
 def load_data():
-    df = pd.read_csv(pd.compat.StringIO(DATA), sep=r"\s+")
+    df = pd.read_csv(StringIO(DATA), sep=r"\s+")
     return df
+
 
 def make_curve_gif(df, duration=0.2):
     frames = []
