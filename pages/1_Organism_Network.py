@@ -12,6 +12,9 @@ import pandas as pd
 import imageio.v2 as imageio
 from io import BytesIO
 
+from io import StringIO, BytesIO
+
+
 st.set_page_config(page_title="Organism Network", layout="wide")
 st.title("Catalytic site of Vitis vinifera DFRs")
 
@@ -138,12 +141,8 @@ with col6:
 
 ##################################################################################
 
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-from io import StringIO
 
-# --- Your data as text (kept with commas) ---
+# ---------- RAW DATA ----------
 DATA = """Angle DHK DHQ DHM
 -180 1,144716292 1,167752184 1,722496125
 -170 1,038353347 1,108414839 1,609782779
@@ -184,40 +183,65 @@ DATA = """Angle DHK DHQ DHM
 180 1,144716292 1,167752184 1,722496125
 """
 
+# ---------- LOAD DATA ----------
 @st.cache_data
 def load_data():
-    # convert commas to dots for pandas
+    # convert EU-style decimals (comma) to dot so pandas can parse
     text = DATA.replace(",", ".")
     df = pd.read_csv(StringIO(text), sep=r"\s+")
     return df
 
-st.title("Energy vs Angle – step-by-step curves")
+# ---------- BUILD GIF ----------
+@st.cache_data
+def make_curve_gif(df, duration=0.15):
+    frames = []
+
+    angles = df["Angle"]
+    dhk = df["DHK"]
+    dhq = df["DHQ"]
+    dhm = df["DHM"]
+
+    for i in range(1, len(df) + 1):
+        fig, ax = plt.subplots(figsize=(4, 3))
+
+        # Remove background: transparent figure and axes
+        fig.patch.set_alpha(0)
+        ax.set_facecolor("none")
+
+        # Plot curves up to step i (progressive drawing)
+        ax.plot(angles[:i], dhk[:i])
+        ax.plot(angles[:i], dhq[:i])
+        ax.plot(angles[:i], dhm[:i])
+
+        # No axes, ticks, labels, legend, grid
+        ax.axis("off")
+
+        # Save frame to buffer with transparency
+        buf = BytesIO()
+        fig.savefig(
+            buf,
+            format="png",
+            transparent=True,
+            bbox_inches="tight",
+            pad_inches=0,
+        )
+        plt.close(fig)
+        buf.seek(0)
+        frames.append(imageio.imread(buf))
+
+    gif_bytes = BytesIO()
+    imageio.mimsave(gif_bytes, frames, format="GIF", duration=duration, loop=0)
+    gif_bytes.seek(0)
+    return gif_bytes
+
+# ---------- STREAMLIT APP ----------
+st.title("Energy vs Angle – automatic curve drawing")
 
 df = load_data()
+gif = make_curve_gif(df, duration=0.15)
 
-# Slider controls how many points to show
-step = st.slider(
-    "Number of points to draw",
-    min_value=1,
-    max_value=len(df),
-    value=1,
-)
-
-subset = df.iloc[:step]
-
-# Plot ONLY the first `step` points => step-by-step effect
-fig, ax = plt.subplots()
-ax.plot(subset["Angle"], subset["DHK"], label="DHK")
-ax.plot(subset["Angle"], subset["DHQ"], label="DHQ")
-ax.plot(subset["Angle"], subset["DHM"], label="DHM")
-
-ax.set_xlabel("Angle (°)")
-ax.set_ylabel("Energy (kcal/mol)")
-ax.set_title("Energy vs Angle")
-ax.legend()
-ax.grid(True)
-
-st.pyplot(fig)
+# show only the GIF, nothing else
+st.image(gif, use_column_width=False)
 
 
 
