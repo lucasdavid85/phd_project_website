@@ -133,7 +133,7 @@ with col4:
     st.image("Videos/ligand_animation_DHK.gif", caption="ORCA quantum calculation of DHK ligand cycle B rotation")
 
 with col5:
-    st.image("Videos/ligand_animation2.gif", caption="ORCA quantum calculation of DHQ ligand cycle B rotation")
+    st.image("Videos/ligand_animation_DHQ.gif", caption="ORCA quantum calculation of DHQ ligand cycle B rotation")
 
 with col6:
     st.image("Videos/ligand_animation_DHM.gif", caption="ORCA quantum calculation of DHM ligand cycle B rotation")
@@ -198,7 +198,7 @@ def load_data():
 
 # ---------- BUILD GIF ----------
 @st.cache_data
-def make_curve_gif(df, duration=0.15, extra_final_frames=8):
+def make_curve_gif(df, duration=5, extra_final_frames=8):
     frames = []
 
     angles = df["Angle"]
@@ -258,7 +258,7 @@ def make_curve_gif(df, duration=0.15, extra_final_frames=8):
 st.title("Energy vs Angle – automatic curve drawing")
 
 df = load_data()
-gif = make_curve_gif(df, duration=0.15, extra_final_frames=8)
+gif = make_curve_gif(df, duration=3, extra_final_frames=8)
 
 # Center the figure on the page
 left, center, right = st.columns([1, 2, 1])
