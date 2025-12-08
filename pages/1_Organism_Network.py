@@ -141,6 +141,11 @@ with col6:
 
 ##################################################################################
 
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import imageio.v2 as imageio
+from io import StringIO, BytesIO
 
 # ---------- RAW DATA ----------
 DATA = """Angle DHK DHQ DHM
@@ -186,14 +191,14 @@ DATA = """Angle DHK DHQ DHM
 # ---------- LOAD DATA ----------
 @st.cache_data
 def load_data():
-    # convert EU-style decimals (comma) to dot so pandas can parse
+    # Convert commas to dots so pandas can parse floats
     text = DATA.replace(",", ".")
     df = pd.read_csv(StringIO(text), sep=r"\s+")
     return df
 
 # ---------- BUILD GIF ----------
 @st.cache_data
-def make_curve_gif(df, duration=0.15):
+def make_curve_gif(df, duration=0.15, extra_final_frames=8):
     frames = []
 
     angles = df["Angle"]
@@ -201,33 +206,48 @@ def make_curve_gif(df, duration=0.15):
     dhq = df["DHQ"]
     dhm = df["DHM"]
 
-    for i in range(1, len(df) + 1):
-        fig, ax = plt.subplots(figsize=(4, 3))
+    # Fix axis limits so points don't move between frames
+    x_min, x_max = angles.min(), angles.max()
+    y_min = min(dhk.min(), dhq.min(), dhm.min())
+    y_max = max(dhk.max(), dhq.max(), dhm.max())
+    # Small margin
+    y_margin = 0.05 * (y_max - y_min)
+    y_min -= y_margin
+    y_max += y_margin
 
-        # Remove background: transparent figure and axes
-        fig.patch.set_alpha(0)
-        ax.set_facecolor("none")
+    for i in range(1, len(df) + 1):
+        fig, ax = plt.subplots(figsize=(5, 4))
 
         # Plot curves up to step i (progressive drawing)
-        ax.plot(angles[:i], dhk[:i])
-        ax.plot(angles[:i], dhq[:i])
-        ax.plot(angles[:i], dhm[:i])
+        ax.plot(angles[:i], dhk[:i], label="DHK")
+        ax.plot(angles[:i], dhq[:i], label="DHQ")
+        ax.plot(angles[:i], dhm[:i], label="DHM")
 
-        # No axes, ticks, labels, legend, grid
-        ax.axis("off")
+        # Fixed axes
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
 
-        # Save frame to buffer with transparency
+        # Show axes + labels
+        ax.set_xlabel("Angle (°)")
+        ax.set_ylabel("Energy (kcal/mol)")
+        ax.set_title("Energy vs Angle")
+        ax.legend()
+        ax.grid(True)
+
         buf = BytesIO()
         fig.savefig(
             buf,
             format="png",
-            transparent=True,
             bbox_inches="tight",
-            pad_inches=0,
+            pad_inches=0.1,
         )
         plt.close(fig)
         buf.seek(0)
         frames.append(imageio.imread(buf))
+
+    # Hold the final frame for a bit longer (pause at end)
+    for _ in range(extra_final_frames):
+        frames.append(frames[-1])
 
     gif_bytes = BytesIO()
     imageio.mimsave(gif_bytes, frames, format="GIF", duration=duration, loop=0)
@@ -238,11 +258,12 @@ def make_curve_gif(df, duration=0.15):
 st.title("Energy vs Angle – automatic curve drawing")
 
 df = load_data()
-gif = make_curve_gif(df, duration=0.15)
+gif = make_curve_gif(df, duration=0.15, extra_final_frames=8)
 
-# show only the GIF, nothing else
-st.image(gif, use_column_width=False)
-
+# Center the figure on the page
+left, center, right = st.columns([1, 2, 1])
+with center:
+    st.image(gif, use_column_width=True)
 
 
 
