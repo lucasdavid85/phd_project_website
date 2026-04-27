@@ -51,10 +51,20 @@ st.markdown("""
 **Aim of the study**: Does the protein–protein interaction influence the substrate specificity of DFR?
 """)
 
+
+st.markdown("""POTENTIAL MEAN FORCE ATTRACT 503 LCC""")
+st.video("Videos/ATTRACT_503_PMF_LCC.mp4",start_time=0)
+
+
+
+
+
 st.markdown("""
 Anthocyanidin synthase (ANS) is the enzyme that follows dihydroflavonol reductase (DFR) in the flavonoid biosynthetic pathway.  
 ANS converts the products of DFR — leucoanthocyanidins — into anthocyanins, which contribute to red, purple, and blue pigmentation in plants.
 """)
+
+
 
 st.image("Videos/ANS.png", caption="ANS enzyme")
 
@@ -89,3 +99,4 @@ render_protein_viewer(
     width=1400,
     height=800
 )
+
