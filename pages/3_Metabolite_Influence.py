@@ -6,25 +6,26 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from collections import defaultdict
+from pathlib import Path
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="DFR metabolites Interaction", layout="wide")
 st.title("Influence of Flavonoid Metabolite Concentration on DFR Substrate Specificity")
 
 # Section: Overview
 st.markdown("""
-**Study Aim:**  
-Does a high concentration of metabolites influence DFR substrate specificity?
+## **Study Aim:**  Does a high concentration of metabolites influence DFR substrate specificity?
 """)
 
 # Section: Video
 st.header("DFR and metabolites Overview")
-st.video("Videos/DFR_metabolites.mp4",  start_time=0)
+st.video("Videos/DFR_metabolites.mp4", autoplay=True)
 
 # Section: Heatmap Image
 st.header("Residue Interaction Heatmap (Precomputed)")
 st.image("Videos/Residence_time.png", caption="DFR–Metabolite Interaction")
 
-# Section: Dynamic Heatmap from CSV
+# # Section: Dynamic Heatmap from CSV
 # st.header("Residue Total Residency Time Heatmap (CSV-Based)")
 # csv_heatmap_path = "Videos/protein_interaction_summary.csv"
 
@@ -44,8 +45,8 @@ st.image("Videos/Residence_time.png", caption="DFR–Metabolite Interaction")
 # else:
 #     st.error(f"CSV file not found at: {csv_heatmap_path}")
 
-# # Section: 3D Structure Viewer
-# st.header("Top 20 Interacting Residues on 3D Structure")
+# Section: 3D Structure Viewer
+st.header("Top 20 Interacting Residues on 3D Structure")
 
 
 # Custom Atom and Molecule parser
@@ -129,3 +130,70 @@ for resid in top_residues:
 
 view.zoomTo()
 st.components.v1.html(view._make_html(), height=750, scrolling=True)
+
+
+
+
+
+
+
+
+# ============================================================
+# CONFIG
+# ============================================================
+
+st.set_page_config(page_title="Interactive Contact Maps", layout="wide")
+
+st.title("Interactive 3D Contact Maps")
+
+BASE_DIR = Path("Videos/metabolites/")
+
+
+# ============================================================
+# CONDITIONS (clean + scalable)
+# ============================================================
+
+conditions = {
+    "ANS DHK": "ANS_DHK_pathway",
+    "ANS DHM": "ANS_DHM_pathway",
+    "ANS DHQ": "ANS_DHQ_pathway",
+    "ATTRACT 503 DHK": "ATTRACT_503_DHK_pathway",
+    "ATTRACT 503 DHM": "ATTRACT_503_DHM_pathway",
+    "ATTRACT 503 DHQ": "ATTRACT_503_DHQ_pathway",
+    "DFR DHK": "DFR_DHK_pathway",
+    "DFR DHM": "DFR_DHM_pathway",
+    "DFR DHQ": "DFR_DHQ_pathway",
+    "LZerD 216 DHK": "LZerD_216_DHK_pathway",
+}
+
+
+# ============================================================
+# SIDEBAR
+# ============================================================
+
+selected = st.sidebar.selectbox(
+    "Choose contact map",
+    list(conditions.keys())
+)
+
+folder = conditions[selected]
+
+html_path = BASE_DIR / folder / f"{folder}_all_residues_3D.html"
+
+
+# ============================================================
+# DISPLAY
+# ============================================================
+
+st.subheader(selected)
+
+if html_path.exists():
+    html_content = html_path.read_text(encoding="utf-8")
+
+    components.html(
+        html_content,
+        height=900,
+        scrolling=True
+    )
+else:
+    st.error(f"File not found: {html_path}")
