@@ -164,8 +164,9 @@ conditions = {
     "DFR DHM": "DFR_DHM_pathway",
     "DFR DHQ": "DFR_DHQ_pathway",
     "LZerD 216 DHK": "LZerD_216_DHK_pathway",
+    "LZerD 216 DHM": "LZerD_216_DHM_pathway",
+    "LZerD 216 DHQ": "LZerD_216_DHQ_pathway",
 }
-
 
 # ============================================================
 # SIDEBAR
@@ -178,7 +179,7 @@ selected = st.sidebar.selectbox(
 
 folder = conditions[selected]
 
-html_path = BASE_DIR / folder / f"{folder}_all_residues_3D.html"
+html_path = BASE_DIR / f"{folder}_all_residues_3D.html"
 
 
 # ============================================================
