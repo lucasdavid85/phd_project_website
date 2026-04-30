@@ -1,1 +1,13 @@
+Videos/metabolites/ANS_DHQ_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/DFR_DHQ_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/LZerD_216_DHM_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/LZerD_216_DHQ_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/DFR_DHM_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/LZerD_216_DHK_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/ANS_DHK_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/ANS_DHM_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/ATTRACT_503_DHK_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/ATTRACT_503_DHM_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/ATTRACT_503_DHQ_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
+Videos/metabolites/DFR_DHK_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
 Videos/metabolites/*.html filter=lfs diff=lfs merge=lfs -text
