@@ -191,10 +191,17 @@ st.subheader(selected)
 if html_path.exists():
     html_content = html_path.read_text(encoding="utf-8")
 
+    css_override = """
+    <style>
+        body { margin: 0; padding: 0; }
+        .plotly-graph-div { width: 100% !important; height: 90vh !important; }
+    </style>
+    """
+    html_content = html_content.replace("</head>", css_override + "</head>", 1)
+
     components.html(
         html_content,
         height=1400,
-        width=1200,
         scrolling=True
     )
 else:
