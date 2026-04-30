@@ -11,3 +11,4 @@ Videos/metabolites/ATTRACT_503_DHM_pathway_all_residues_3D.html filter=lfs diff=
 Videos/metabolites/ATTRACT_503_DHQ_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
 Videos/metabolites/DFR_DHK_pathway_all_residues_3D.html filter=lfs diff=lfs merge=lfs -text
 Videos/metabolites/*.html filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
