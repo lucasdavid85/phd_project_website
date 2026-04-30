@@ -193,7 +193,7 @@ if html_path.exists():
 
     components.html(
         html_content,
-        height=900,
+        height=1400,
         scrolling=True
     )
 else:
