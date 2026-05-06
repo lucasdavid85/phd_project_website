@@ -194,14 +194,15 @@ if html_path.exists():
     css_override = """
     <style>
         body { margin: 0; padding: 0; }
-        .plotly-graph-div { width: 100% !important; height: 90vh !important; }
+        .plotly-graph-div { width: 100% !important; height: 100% !important; }
     </style>
     """
     html_content = html_content.replace("</head>", css_override + "</head>", 1)
 
     components.html(
         html_content,
-        height=3000,
+        height=800,
+        width=800,
         scrolling=True
     )
 else:
