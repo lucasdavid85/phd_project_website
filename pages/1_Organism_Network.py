@@ -100,30 +100,30 @@ st.markdown("""
 st.markdown("""Molecular dynamics simulations were performed to study the interactions of these DFRs with the substrate NPH (Naringenin).
             
          """)
-#st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
+st.image("Videos/MD_comparison.png", caption="DFR Organism MD simulation",)
 
 
 
-# Load and display the SVG
-svg_path = "Videos/V2.svg"
+# # Load and display the SVG
+# svg_path = "Videos/V2.svg"
 
-try:
-    with open(svg_path, "r") as f:
-        svg_content = f.read()
+# try:
+#     with open(svg_path, "r") as f:
+#         svg_content = f.read()
 
-    # Embed SVG with scrollable container if it's large
-    st.markdown("""
-    <div style='overflow-x: auto; border:1px solid #ccc; padding:10px'>
-    """ + svg_content + """
-    </div>
-    """, unsafe_allow_html=True)
+#     # Embed SVG with scrollable container if it's large
+#     st.markdown("""
+#     <div style='overflow-x: auto; border:1px solid #ccc; padding:10px'>
+#     """ + svg_content + """
+#     </div>
+#     """, unsafe_allow_html=True)
 
-except FileNotFoundError:
-    st.error(f"SVG file not found at path: {svg_path}")
+# except FileNotFoundError:
+#     st.error(f"SVG file not found at path: {svg_path}")
 
-# Optional video section
-st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
-st.video("Videos/DFR_DHQ.mp4", start_time=0)
+# # Optional video section
+# st.header("Molecular dynamic simulation of Vitis vinifera DFR with DHQ substrate")
+# st.video("Videos/DFR_DHQ.mp4", start_time=0)
 
 
 
