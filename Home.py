@@ -13,35 +13,34 @@ IMAGE_HEIGHT = 250
 
 # ---- Styling for the clickable tiles ----
 st.markdown(
-    """
+    f"""
     <style>
-    .tile-link {
+    .tile-link {{
         display: block;
         text-decoration: none;
         color: inherit;
-    }
-    .tile-link img {
+    }}
+    .tile-link img {{
         width: 100%;
-        height: %dpx;
+        height: {IMAGE_HEIGHT}px;
         object-fit: cover;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .tile-link:hover img {
+    }}
+    .tile-link:hover img {{
         transform: scale(1.03);
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-    }
-    .tile-label {
+    }}
+    .tile-label {{
         display: block;
         text-align: center;
         margin-top: 12px;
         font-size: 1.1rem;
         font-weight: 600;
-    }
+    }}
     </style>
-    """
-    % IMAGE_HEIGHT,
+    """,
     unsafe_allow_html=True,
 )
 
