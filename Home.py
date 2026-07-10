@@ -79,7 +79,7 @@ with col2:
     display_tile("Videos/test1.png", "ANS_DFR_Substrate", "🔬 ANS DFR Interaction")
 
 with col3:
-    display_tile("Videos/test.00013.png", "Metabolite_Influence", "🧪 Metabolite Influence")
+    display_tile("Videos/test.00013-2.png", "Metabolite_Influence", "🧪 Metabolite Influence")
 
 # ---- Contact Section ----
 st.markdown("<div style='height:40px'></div>", unsafe_allow_html=True)
