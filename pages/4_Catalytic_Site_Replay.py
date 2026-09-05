@@ -7,16 +7,20 @@ are overlaid so the loss of supporting contacts can be watched frame by frame.
 
 Data: data/catalytic_replay.json  (built by DFR_Alone/build_frame_viewer.py)
 """
+import base64
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import py3Dmol
 import streamlit as st
 
 st.set_page_config(page_title="Catalytic Site Replay", layout="wide")
 
 DATA_PATH = Path("data/catalytic_replay.json")
+COORD_PATH = Path("data/site_coords.json")
 
 ROLE_COLOR = {
     "SUB": "#C44E52",   # substrate
@@ -43,6 +47,66 @@ def load_runs():
         return None
     with open(DATA_PATH) as fh:
         return json.load(fh)
+
+
+@st.cache_data(show_spinner=False)
+def load_coords():
+    if not COORD_PATH.exists():
+        return None
+    with open(COORD_PATH) as fh:
+        return json.load(fh)
+
+
+@st.cache_data(show_spinner=False)
+def frame_pdb(run_key, frame):
+    """Rebuild a single-frame PDB of the catalytic site from the packed coordinates."""
+    C = load_coords()
+    if C is None or run_key not in C:
+        return None
+    c = C[run_key]
+    q = np.frombuffer(base64.b64decode(c["xyz"]), dtype="<u2")
+    na = c["natoms"]
+    lo, span = np.array(c["lo"]), np.array(c["span"])
+    xyz = lo + q[frame * na * 3:(frame + 1) * na * 3].reshape(na, 3) / 65535.0 * span
+    lines = []
+    for i, (m, p) in enumerate(zip(c["meta"], xyz), start=1):
+        # PDB fixed columns: 13-16 atom name, 17 altLoc, 18-20 resName,
+        # 22 chainID, 23-26 resSeq, 31-38/39-46/47-54 xyz, 77-78 element.
+        name = m["n"] if len(m["n"]) >= 4 else " " + m["n"].ljust(3)
+        lines.append(
+            f"ATOM  {i:>5} {name:<4} {m['r']:>3} A{m['i']:>4}    "
+            f"{p[0]:8.3f}{p[1]:8.3f}{p[2]:8.3f}  1.00  0.00          {m['e']:>2}")
+    return "\n".join(lines) + "\nEND\n", c["meta"]
+
+
+def render_structure(run_key, frame, height=560):
+    out = frame_pdb(run_key, frame)
+    if out is None:
+        st.info("All-atom coordinates are not available for this run.")
+        return
+    pdb, meta = out
+    view = py3Dmol.view(width=760, height=height)
+    view.addModel(pdb, "pdb")
+    view.setStyle({}, {"stick": {"radius": 0.13, "color": ROLE_COLOR["OTH"]}})
+    for role, sel in (
+        ("REG", {"resi": sorted({m["i"] for m in meta if m["c"] == "REG"})}),
+        ("CAT", {"resi": sorted({m["i"] for m in meta if m["c"] == "CAT"})}),
+        ("REC", {"resi": sorted({m["i"] for m in meta if m["c"] == "REC"})}),
+        ("NPH", {"resn": "NPH"}),
+    ):
+        if sel.get("resi") or sel.get("resn"):
+            view.setStyle(sel, {"stick": {"radius": 0.16, "color": ROLE_COLOR[role]}})
+    subs = sorted({m["r"] for m in meta if m["c"] == "SUB"})
+    if subs:
+        view.setStyle({"resn": subs},
+                      {"stick": {"radius": 0.24, "color": ROLE_COLOR["SUB"]},
+                       "sphere": {"radius": 0.34, "color": ROLE_COLOR["SUB"]}})
+        view.zoomTo({"resn": subs})
+        view.zoom(0.55)
+    else:
+        view.zoomTo()
+    view.setBackgroundColor("rgba(0,0,0,0)")
+    st.components.v1.html(view._make_html(), height=height + 20, scrolling=False)
 
 
 def unhex(h, n):
@@ -216,18 +280,26 @@ exit_note = (f"exit at frame {r['exit'] + 1}" if r["exit"] is not None
 default = max(0, (r["exit"] or n // 2) - 12)
 frame = st.slider(f"Frame  ·  {exit_note}", 1, n, min(default + 1, n)) - 1
 
-left, right = st.columns([3, 1])
+viz_l, viz_r = st.columns(2)
 
-with left:
+with viz_l:
+    st.markdown("**Contact network** · edge width is occupancy over the run")
     fig = build_figure(r, edges if show_absent else
                        [e for e in edges if e["on"][frame] == "1"],
                        insite, frame, animate)
     st.plotly_chart(fig, use_container_width=True,
                     config={"displayModeBar": False})
-    st.plotly_chart(residence_strip(r, insite, frame), use_container_width=True,
-                    config={"displayModeBar": False})
 
-with right:
+with viz_r:
+    st.markdown("**Catalytic site, all-atom** · drag to rotate, scroll to zoom")
+    render_structure(run_key, frame, height=620 if not animate else 620)
+
+st.plotly_chart(residence_strip(r, insite, frame), use_container_width=True,
+                config={"displayModeBar": False})
+
+info_l, info_r = st.columns([1, 2])
+
+with info_l:
     inside = insite[frame] == "1"
     st.markdown(
         f"<div style='padding:10px 14px;border-radius:8px;text-align:center;font-weight:600;"
@@ -257,9 +329,11 @@ with right:
             f"background:{c};margin-right:4px'></span>{ROLE_LABEL[k]}</span>"
             for k, c in ROLE_COLOR.items()),
         unsafe_allow_html=True)
-    st.caption("Triad Ser123 · Tyr158 · Lys162 (YxxxK). Recognition: residue 128 and Gln222.")
+    st.caption("Triad Ser123 · Tyr158 · Lys162 (YxxxK). Recognition: residue 128 and Gln222. "
+               "Both panels use the same colours and the same frame.")
 
-with st.expander("Contacts present in this frame"):
+with info_r:
+    st.markdown("**Contacts present in this frame**")
     rows = [{"contact": ("substrate" if e["a"] == "SUB" else e["a"]) + " – " +
                         ("substrate" if e["b"] == "SUB" else e["b"]),
              "occupancy over the run (%)": round(e["occ"] * 100),
@@ -267,7 +341,7 @@ with st.expander("Contacts present in this frame"):
             for e in edges if e["on"][frame] == "1"]
     st.dataframe(pd.DataFrame(rows).sort_values("occupancy over the run (%)",
                                                 ascending=False),
-                 use_container_width=True, hide_index=True)
+                 use_container_width=True, hide_index=True, height=320)
 
 st.caption(
     "27 runs · 3 orthologues × 3 substrates × 3 replicates · 200 frames over 200 ns. "
