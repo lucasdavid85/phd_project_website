@@ -34,6 +34,10 @@ ROLE_LABEL = {
     "SUB": "substrate", "NPH": "NADPH", "CAT": "catalytic triad",
     "REC": "recognition", "REG": "region 119–162", "OTH": "other contact",
 }
+AA1 = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E",
+       "GLY": "G", "HIS": "H", "HID": "H", "HIE": "H", "HIP": "H", "ILE": "I", "LEU": "L",
+       "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W",
+       "TYR": "Y", "VAL": "V"}
 CRITERIA = [
     ("Hydride C4N–H···C4", "hyd", 4.0, "accessibility of the hydride-transfer coordinate"),
     ("Tyr158 OH···O4", "tyr", 4.0, "hydrogen bond to the catalytic tyrosine"),
@@ -79,7 +83,7 @@ def frame_pdb(run_key, frame):
     return "\n".join(lines) + "\nEND\n", c["meta"]
 
 
-def render_structure(run_key, frame, height=560):
+def render_structure(run_key, frame, show_labels=True, height=560):
     out = frame_pdb(run_key, frame)
     if out is None:
         st.info("All-atom coordinates are not available for this run.")
@@ -88,21 +92,34 @@ def render_structure(run_key, frame, height=560):
     view = py3Dmol.view(width=760, height=height)
     view.addModel(pdb, "pdb")
     view.setStyle({}, {"stick": {"radius": 0.13, "color": ROLE_COLOR["OTH"]}})
-    for role, sel in (
-        ("REG", {"resi": sorted({m["i"] for m in meta if m["c"] == "REG"})}),
-        ("CAT", {"resi": sorted({m["i"] for m in meta if m["c"] == "CAT"})}),
-        ("REC", {"resi": sorted({m["i"] for m in meta if m["c"] == "REC"})}),
-        ("NPH", {"resn": "NPH"}),
-    ):
-        if sel.get("resi") or sel.get("resn"):
-            view.setStyle(sel, {"stick": {"radius": 0.16, "color": ROLE_COLOR[role]}})
+    for role in ("REG", "CAT", "REC"):
+        resi = sorted({m["i"] for m in meta if m["c"] == role})
+        if resi:
+            view.setStyle({"resi": resi},
+                          {"stick": {"radius": 0.16, "color": ROLE_COLOR[role]}})
+    view.setStyle({"resn": "NPH"}, {"stick": {"radius": 0.16, "color": ROLE_COLOR["NPH"]}})
     subs = sorted({m["r"] for m in meta if m["c"] == "SUB"})
     if subs:
         view.setStyle({"resn": subs},
                       {"stick": {"radius": 0.24, "color": ROLE_COLOR["SUB"]},
                        "sphere": {"radius": 0.34, "color": ROLE_COLOR["SUB"]}})
-        view.zoomTo({"resn": subs})
-        view.zoom(0.55)
+
+    if show_labels:
+        seen = {}
+        for m in meta:
+            seen.setdefault((m["r"], m["i"], m["c"]), True)
+        for (resn, resi, role) in seen:
+            if role in ("SUB", "NPH"):
+                text, sel = resn, {"resn": resn}
+            else:
+                text, sel = f"{AA1.get(resn, resn)}{resi}", {"resi": resi}
+            view.addLabel(text, {
+                "fontSize": 11, "fontColor": "white", "inFront": True,
+                "backgroundColor": ROLE_COLOR[role], "backgroundOpacity": 0.75,
+                "borderThickness": 0.0, "alignment": "center"}, sel)
+
+    if subs:
+        view.zoomTo({"resn": subs}); view.zoom(0.5)
     else:
         view.zoomTo()
     view.setBackgroundColor("rgba(0,0,0,0)")
@@ -262,86 +279,121 @@ labels = {k: f"{v['organism']} · {v['ligand']} · {v['rep']}" for k, v in RUNS.
 suggested = [k for k in ("Vitis_DHQ_MD3", "Maize_A1b_DHK_MD1", "Maize_A1_DHQ_MD1") if k in RUNS]
 order = suggested + [k for k in RUNS if k not in suggested]
 
-top = st.columns([3, 2, 2])
+top = st.columns([3, 1.4, 1.4, 1.4])
 with top[0]:
     run_key = st.selectbox("Run", order, format_func=lambda k: labels[k])
 with top[1]:
-    animate = st.toggle("Animate in browser", value=False,
-                        help="Adds a Plotly play button. Turn off for a lighter page.")
+    show_labels = st.toggle("Residue labels", value=True)
 with top[2]:
     show_absent = st.toggle("Show absent contacts", value=True,
                             help="Keeps the topology visible while contacts come and go.")
+with top[3]:
+    speed = st.select_slider("Speed", options=["slow", "medium", "fast"], value="medium")
+
+TICK = {"slow": 0.6, "medium": 0.35, "fast": 0.18}[speed]
 
 r, edges, insite = decode(run_key)
 n = r["nframes"]
 
+# frame lives in session state so Play can advance it between reruns
+if "frame" not in st.session_state or st.session_state.get("frame_run") != run_key:
+    st.session_state.frame = max(0, (r["exit"] or n // 2) - 12)
+    st.session_state.frame_run = run_key
+    st.session_state.playing = False
+st.session_state.setdefault("playing", False)
+
 exit_note = (f"exit at frame {r['exit'] + 1}" if r["exit"] is not None
              else "no sustained exit in this run")
-default = max(0, (r["exit"] or n // 2) - 12)
-frame = st.slider(f"Frame  ·  {exit_note}", 1, n, min(default + 1, n)) - 1
 
-viz_l, viz_r = st.columns(2)
 
-with viz_l:
-    st.markdown("**Contact network** · edge width is occupancy over the run")
-    fig = build_figure(r, edges if show_absent else
-                       [e for e in edges if e["on"][frame] == "1"],
-                       insite, frame, animate)
-    st.plotly_chart(fig, use_container_width=True,
+def draw_everything():
+    """The animated region. Re-runs on its own while Play is on."""
+    if st.session_state.playing:
+        st.session_state.frame = (st.session_state.frame + 1) % n
+
+    ctl = st.columns([1, 1, 6])
+    with ctl[0]:
+        if st.button("▶ Play" if not st.session_state.playing else "❚❚ Pause",
+                     use_container_width=True, key="playbtn"):
+            st.session_state.playing = not st.session_state.playing
+            st.rerun()
+    with ctl[1]:
+        if st.button("⏮ Reset", use_container_width=True, key="resetbtn"):
+            st.session_state.playing = False
+            st.session_state.frame = 0
+            st.rerun()
+    with ctl[2]:
+        frame = st.slider(f"Frame  ·  {exit_note}", 1, n, st.session_state.frame + 1,
+                          key=f"slider_{run_key}") - 1
+        if not st.session_state.playing:
+            st.session_state.frame = frame
+
+    frame = st.session_state.frame
+
+    viz_l, viz_r = st.columns(2)
+    with viz_l:
+        st.markdown("**Contact network** · edge width is occupancy over the run")
+        st.plotly_chart(
+            build_figure(r, edges if show_absent else
+                         [e for e in edges if e["on"][frame] == "1"],
+                         insite, frame, False),
+            use_container_width=True, config={"displayModeBar": False})
+    with viz_r:
+        st.markdown("**Catalytic site, all-atom** · drag to rotate, scroll to zoom")
+        render_structure(run_key, frame, show_labels=show_labels, height=620)
+
+    st.plotly_chart(residence_strip(r, insite, frame), use_container_width=True,
                     config={"displayModeBar": False})
 
-with viz_r:
-    st.markdown("**Catalytic site, all-atom** · drag to rotate, scroll to zoom")
-    render_structure(run_key, frame, height=620 if not animate else 620)
+    info_l, info_r = st.columns([1, 2])
+    with info_l:
+        inside = insite[frame] == "1"
+        st.markdown(
+            f"<div style='padding:10px 14px;border-radius:8px;text-align:center;font-weight:600;"
+            f"color:#fff;background:{'#2F6B45' if inside else '#A8434A'}'>"
+            f"{'IN CATALYTIC SITE' if inside else 'OUT OF SITE'}</div>",
+            unsafe_allow_html=True)
+        st.caption("All three criteria must hold simultaneously.")
+        for name, key, limit, note in CRITERIA:
+            val = r[key][frame]
+            ok = val <= limit
+            st.metric(name, f"{val:.2f} Å", f"{'✓' if ok else '✗'}  threshold ≤ {limit} Å",
+                      delta_color="normal" if ok else "inverse", help=note)
+        active = sum(1 for e in edges if e["on"][frame] == "1")
+        sub_active = sum(1 for e in edges
+                         if e["on"][frame] == "1" and "SUB" in (e["a"], e["b"]))
+        st.divider()
+        st.write(f"**Contacts present** {active} of {len(edges)}")
+        st.write(f"**Substrate contacts** {sub_active}")
+        st.divider()
+        st.markdown("**Residue roles**")
+        st.markdown(
+            " ".join(
+                f"<span style='display:inline-block;margin:2px 8px 2px 0;font-size:12px'>"
+                f"<span style='display:inline-block;width:9px;height:9px;border-radius:50%;"
+                f"background:{c};margin-right:4px'></span>{ROLE_LABEL[k]}</span>"
+                for k, c in ROLE_COLOR.items()),
+            unsafe_allow_html=True)
+        st.caption("Triad Ser123 · Tyr158 · Lys162 (YxxxK). Recognition: residue 128 and "
+                   "Gln222. Both panels use the same colours and the same frame.")
 
-st.plotly_chart(residence_strip(r, insite, frame), use_container_width=True,
-                config={"displayModeBar": False})
+    with info_r:
+        st.markdown("**Contacts present in this frame**")
+        rows = [{"contact": ("substrate" if e["a"] == "SUB" else e["a"]) + " – " +
+                            ("substrate" if e["b"] == "SUB" else e["b"]),
+                 "occupancy over the run (%)": round(e["occ"] * 100),
+                 "touches substrate": "yes" if "SUB" in (e["a"], e["b"]) else ""}
+                for e in edges if e["on"][frame] == "1"]
+        st.dataframe(pd.DataFrame(rows).sort_values("occupancy over the run (%)",
+                                                    ascending=False),
+                     use_container_width=True, hide_index=True, height=320)
 
-info_l, info_r = st.columns([1, 2])
 
-with info_l:
-    inside = insite[frame] == "1"
-    st.markdown(
-        f"<div style='padding:10px 14px;border-radius:8px;text-align:center;font-weight:600;"
-        f"color:#fff;background:{'#2F6B45' if inside else '#A8434A'}'>"
-        f"{'IN CATALYTIC SITE' if inside else 'OUT OF SITE'}</div>",
-        unsafe_allow_html=True)
-    st.caption("All three criteria must hold simultaneously.")
-    for name, key, limit, note in CRITERIA:
-        val = r[key][frame]
-        ok = val <= limit
-        st.metric(name, f"{val:.2f} Å", f"{'✓' if ok else '✗'}  threshold ≤ {limit} Å",
-                  delta_color="normal" if ok else "inverse", help=note)
-
-    active = sum(1 for e in edges if e["on"][frame] == "1")
-    sub_active = sum(1 for e in edges
-                     if e["on"][frame] == "1" and "SUB" in (e["a"], e["b"]))
-    st.divider()
-    st.write(f"**Contacts present** {active} of {len(edges)}")
-    st.write(f"**Substrate contacts** {sub_active}")
-
-    st.divider()
-    st.markdown("**Residue roles**")
-    st.markdown(
-        " ".join(
-            f"<span style='display:inline-block;margin:2px 8px 2px 0;font-size:12px'>"
-            f"<span style='display:inline-block;width:9px;height:9px;border-radius:50%;"
-            f"background:{c};margin-right:4px'></span>{ROLE_LABEL[k]}</span>"
-            for k, c in ROLE_COLOR.items()),
-        unsafe_allow_html=True)
-    st.caption("Triad Ser123 · Tyr158 · Lys162 (YxxxK). Recognition: residue 128 and Gln222. "
-               "Both panels use the same colours and the same frame.")
-
-with info_r:
-    st.markdown("**Contacts present in this frame**")
-    rows = [{"contact": ("substrate" if e["a"] == "SUB" else e["a"]) + " – " +
-                        ("substrate" if e["b"] == "SUB" else e["b"]),
-             "occupancy over the run (%)": round(e["occ"] * 100),
-             "touches substrate": "yes" if "SUB" in (e["a"], e["b"]) else ""}
-            for e in edges if e["on"][frame] == "1"]
-    st.dataframe(pd.DataFrame(rows).sort_values("occupancy over the run (%)",
-                                                ascending=False),
-                 use_container_width=True, hide_index=True, height=320)
+# st.fragment re-runs only this block, so Play does not redraw the whole page.
+if hasattr(st, "fragment") and st.session_state.playing:
+    st.fragment(run_every=TICK)(draw_everything)()
+else:
+    draw_everything()
 
 st.caption(
     "27 runs · 3 orthologues × 3 substrates × 3 replicates · 200 frames over 200 ns. "
